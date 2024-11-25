@@ -4,7 +4,7 @@ from sqlalchemy.orm import declarative_base
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from fastapi import Depends
 
-from app.core.config import settings
+from core.config import settings
 
 
 engine = create_async_engine(
