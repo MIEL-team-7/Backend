@@ -39,7 +39,7 @@ class Admin(BaseUser):
 class Manager(BaseUser):
     __tablename__ = "managers"
 
-    quotas = Column(Integer)
+    quotas = Column(Integer, index=True)
     office_id = Column(Integer, ForeignKey("offices.id"))
 
     candidates = relationship("Candidate", back_populates="manager")
@@ -52,13 +52,13 @@ class Candidate(Base):
     __tablename__ = "candidates"
 
     id = Column(Integer, primary_key=True)
-    manager_id = Column(Integer, ForeignKey("managers.id"))
+    manager_id = Column(Integer, ForeignKey("managers.id"), nullable=True, index=True)
     full_name = Column(String(100))
     resume = Column(Text())
     email = Column(String(100), unique=True)
     phone = Column(String(100), unique=True)
     status = Column(
-        Enum(CandidateStatus), default=CandidateStatus.available, nullable=False
+        Enum(CandidateStatus), default=CandidateStatus.available, nullable=False, index=True
     )
 
     manager = relationship("Manager", back_populates="candidates")
@@ -81,8 +81,8 @@ class QuotasStat(Base):
     __tablename__ = "quotas_stat"
 
     id = Column(Integer, primary_key=True)
-    done_by = Column(Integer, ForeignKey("managers.id"))
-    candidate_id = Column(Integer, ForeignKey("candidates.id"))
+    done_by = Column(Integer, ForeignKey("managers.id"), index=True)
+    candidate_id = Column(Integer, ForeignKey("candidates.id"), index=True)
     old_type = Column(
         Enum(CandidateStatus), default=CandidateStatus.available, nullable=False
     )
