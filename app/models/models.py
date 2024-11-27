@@ -26,7 +26,6 @@ class BaseUser(BaseModel):
     __abstract__ = True  # Не создаст таблицу в БД, так как это абстрактная модель
 
     id = Column(Integer, primary_key=True)
-    full_name = Column(String(100))
     email = Column(String(100), unique=True)
     password = Column(String(100))
 
@@ -42,6 +41,7 @@ class Admin(BaseUser):
 class Manager(BaseUser):
     __tablename__ = "managers"
 
+    full_name = Column(String(100))
     quotas = Column(Integer, index=True)
     office_id = Column(Integer, ForeignKey("offices.id"))
 
