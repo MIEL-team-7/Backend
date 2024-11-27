@@ -1,6 +1,7 @@
 import enum
 from sqlalchemy import Column, Integer, String, Text, Enum, DateTime, func, ForeignKey
 from sqlalchemy.orm import relationship
+
 from core.db import Base
 
 
@@ -26,7 +27,7 @@ class BaseUser(BaseModel):
     __abstract__ = True  # Не создаст таблицу в БД, так как это абстрактная модель
 
     id = Column(Integer, primary_key=True)
-    full_name = Column(String(100))
+    full_name = Column(String(100))  # Логин = e-mail
     password = Column(String(100))
 
 
