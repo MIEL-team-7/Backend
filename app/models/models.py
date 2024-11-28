@@ -97,7 +97,7 @@ class CandidateCourse(Base):
     __tablename__ = "candidate_courses"
 
     id = Column(Integer, primary_key=True)
-    course = Column(Integer, ForeignKey("courses.id"), index=True)
+    course_id = Column(Integer, ForeignKey("courses.id"), index=True)
     candidate_id = Column(Integer, ForeignKey("candidates.id"), index=True)
 
     candidate = relationship("Candidate", back_populates="courses")

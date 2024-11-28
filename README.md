@@ -34,7 +34,7 @@ alembic upgrade head
 ### 5. Запуск сервера
 
 ```bash
-python app/main.py
+python -m app.main
 ```
 
 Сервер доступен по адресу http://127.0.0.1:8000
