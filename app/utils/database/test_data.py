@@ -1,10 +1,15 @@
 from faker import Faker
 import asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import selectinload
-from app.core.db import get_session
-from app.models.models import Admin, Manager, Candidate, Office, Course, ManagerCandidate, CandidateCourse
-from sqlalchemy.ext.asyncio import AsyncSession
+from app.models.models import (
+    Admin,
+    Manager,
+    Candidate,
+    Office,
+    Course,
+    ManagerCandidate,
+    CandidateCourse,
+)
 from app.core.db import AsyncSessionFactory
 
 
@@ -15,6 +20,7 @@ fake = Faker()
 async def get_session() -> AsyncSession:
     return AsyncSessionFactory()
 
+
 # Основная функция для заполнения базы данных
 async def populate_database(
     num_offices: int = 5,
@@ -23,7 +29,7 @@ async def populate_database(
     num_candidates: int = 50,
     num_courses: int = 10,
     max_candidates_per_manager: int = 3,
-    max_courses_per_candidate: int = 3
+    max_courses_per_candidate: int = 3,
 ):
     session = await get_session()  # Получаем сессию вручную
     try:
@@ -80,10 +86,14 @@ async def populate_database(
 
         # Связываем кандидатов с руководителями (каждого кандидата может назначить несколько менеджеров)
         for candidate in candidates:
-            num_managers_for_candidate = fake.random_int(min=1, max=max_candidates_per_manager)
+            num_managers_for_candidate = fake.random_int(
+                min=1, max=max_candidates_per_manager
+            )
             for _ in range(num_managers_for_candidate):
                 manager_candidate = ManagerCandidate(
-                    done_by=fake.random_int(min=1, max=num_managers),  # Пример связи с руководителем
+                    done_by=fake.random_int(
+                        min=1, max=num_managers
+                    ),  # Пример связи с руководителем
                     candidate_id=candidate.id,
                     is_viewed=fake.boolean(),
                 )
@@ -102,7 +112,9 @@ async def populate_database(
 
         # Связываем кандидатов с курсами (каждого кандидата может пройти несколько курсов)
         for candidate in candidates:
-            num_courses_for_candidate = fake.random_int(min=1, max=max_courses_per_candidate)
+            num_courses_for_candidate = fake.random_int(
+                min=1, max=max_courses_per_candidate
+            )
             for _ in range(num_courses_for_candidate):
                 candidate_course = CandidateCourse(
                     candidate_id=candidate.id,
@@ -115,5 +127,14 @@ async def populate_database(
         # Явно закрываем сессию
         await session.close()
 
+
 if __name__ == "__main__":
-    asyncio.run(populate_database(num_offices=3, num_admins=2, num_managers=5, num_candidates=20, num_courses=5))
+    asyncio.run(
+        populate_database(
+            num_offices=3,
+            num_admins=2,
+            num_managers=5,
+            num_candidates=20,
+            num_courses=5,
+        )
+    )

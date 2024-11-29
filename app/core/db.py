@@ -1,10 +1,9 @@
-from typing import Annotated, AsyncGenerator
+from typing import AsyncGenerator
 
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 
-from fastapi import Depends
 
 from app.core.config import settings
 
@@ -21,8 +20,8 @@ AsyncSessionFactory = sessionmaker(
     expire_on_commit=False,
 )
 
+
 # Создание сессии
 async def get_session() -> AsyncGenerator:
     async with AsyncSessionFactory() as session:
         yield session
-
