@@ -30,16 +30,20 @@ pip install -r requirements.txt
 alembic upgrade head
 ```
 
+### 5. Заполение базы данных тестовыми полями
+```bash
+python -m app.utils.database.test_data
+```
 
-### 5. Запуск сервера
+### 6. Запуск сервера
 
 ```bash
-python app/main.py
+python -m app.main
 ```
 
 Сервер доступен по адресу http://127.0.0.1:8000
 
-### 6. Документация
+### 7. Документация
 
 - [Swagger UI](http://127.0.0.1:8000/docs)
 

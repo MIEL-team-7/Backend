@@ -1,0 +1,12 @@
+from pydantic import BaseModel
+
+
+class getManager(BaseModel):
+    """Модель для сериализации руководителя"""
+
+    id: int
+    email: int
+    full_name: str
+    quotas: int
+
+    model_config = {"from_attributes": True}
