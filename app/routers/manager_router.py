@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -16,11 +15,11 @@ manager_router = APIRouter(
 )
 
 
-@manager_router.get("/")
-async def get_manager(session: AsyncSession = Depends(get_session)) -> getManager:
-    manager = await read_manager_by_id(1, session)
+@manager_router.get("/{id}", response_model=getManager)
+async def get_manager(id: int, session: AsyncSession = Depends(get_session)):
+    manager = await read_manager_by_id(id, session)
     if manager:
-        return getManager.model_validate(manager)
+        return manager
     raise HTTPException(status_code=404, detail="Руководитель не найден")
 
 

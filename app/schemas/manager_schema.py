@@ -5,7 +5,7 @@ class getManager(BaseModel):
     """Модель для сериализации руководителя"""
 
     id: int
-    email: int
+    email: str
     full_name: str
     quotas: int
 
