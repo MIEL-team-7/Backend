@@ -8,5 +8,5 @@ class getManager(BaseModel):
     email: str
     full_name: str
     quotas: int
-
+    
     model_config = {"from_attributes": True}

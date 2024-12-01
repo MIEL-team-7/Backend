@@ -110,5 +110,4 @@ class Course(Base):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
-
     candidates = relationship("CandidateCourse", back_populates="course")
