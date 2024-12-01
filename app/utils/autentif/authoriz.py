@@ -2,31 +2,18 @@ from datetime import timedelta
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from passlib.context import CryptContext
 
-from core.db import get_session
-from main import app
-from models.models import BaseUser
-from utils.autentif.tok import create_access_token, decode_token
+from app.core.db import get_session
+from app.main import app
+from app.models.models import BaseUser
+from app.utils.autentif.passw import verify_password
+from app.utils.autentif.tok import create_access_token, decode_token
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# Настраиваем контекст для хеширования паролей
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-
-# Функция для хеширования пароля
-def get_password_hash(password):
-    return pwd_context.hash(password)
-
-
-# Функция для проверки пароля
-def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-# Авторизация пользователя и создание токена
+# Авторизация руководителя и создание токена
 @app.post("/login")
 def login(username: str, password: str, db: AsyncSession = Depends(get_session)):
     user = db.query(BaseUser).filter(BaseUser.username == username).first()
