@@ -21,14 +21,19 @@ def login(username: str, password: str, db: AsyncSession = Depends(get_session))
         raise HTTPException(status_code=401, detail="Неверный логин или пароль")
 
     token_data = {"sub": user.username}
-    access_token = create_access_token(data=token_data, expires_delta=timedelta(minutes=30))
+    access_token = create_access_token(
+        data=token_data, expires_delta=timedelta(minutes=30)
+    )
     return {"access_token": access_token, "token_type": "bearer"}
+
 
 # Защищённый маршрут
 @app.get("/protected/")
 def protected_route(token: str = Depends(oauth2_scheme)):
     payload = decode_token(token)
     if payload is None:
-        raise HTTPException(status_code=401, detail="Неверный токен или срок действия истёк")
+        raise HTTPException(
+            status_code=401, detail="Неверный токен или срок действия истёк"
+        )
 
     return {"msg": f"Добро пожаловать, {payload['sub']}!"}

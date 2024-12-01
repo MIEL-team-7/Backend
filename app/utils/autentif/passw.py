@@ -13,5 +13,3 @@ def get_password_hash(password):
 # Функция для проверки пароля
 def verify_password(plain_password, hash_password):
     return pwd_context.verify(plain_password, hash_password)
-
-
