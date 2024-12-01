@@ -7,8 +7,6 @@ from app.utils.routers import register_routers
 
 app = FastAPI()
 
-register_routers(app)
-
 
 register_routers(app)
 
