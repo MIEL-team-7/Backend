@@ -2,7 +2,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    class ConfigDict:
+    class Config:
         env_file = ".env"
 
     DB_HOST: str
