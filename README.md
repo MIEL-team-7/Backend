@@ -10,6 +10,7 @@
 ```bash
 git clone https://github.com/MIEL-team-7/Backend
 cd Backend
+git switch dev
 ```
 
 ### 2. Установка зависимостей
@@ -24,15 +25,26 @@ pip install -r requirements.txt
 ### 3. Настройка переменных окружения
 Создайте файл `.env` в корневой директории проекта и заполните его переменными окружения согласно `example.env`
 
-### 3. Запуск сервера
+### 4. Создание базы данных
+Создайте таблицы в базе данных с помощью `alembic`
+```bash
+alembic upgrade head
+```
+
+### 5. Заполение базы данных тестовыми полями
+```bash
+python -m app.utils.database.test_data
+```
+
+### 6. Запуск сервера
 
 ```bash
-python app/main.py
+python -m app.main
 ```
 
 Сервер доступен по адресу http://127.0.0.1:8000
 
-### 4. Документация
+### 7. Документация
 
 - [Swagger UI](http://127.0.0.1:8000/docs)
 

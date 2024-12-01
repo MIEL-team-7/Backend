@@ -13,6 +13,7 @@ engine = create_async_engine(db_url)
 
 Base = declarative_base()
 
+
 AsyncSessionFactory = sessionmaker(
     bind=engine,
     class_=AsyncSession,
@@ -24,4 +25,3 @@ AsyncSessionFactory = sessionmaker(
 async def get_session() -> AsyncGenerator:
     async with AsyncSessionFactory() as session:
         yield session
-
