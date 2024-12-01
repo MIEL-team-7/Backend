@@ -8,14 +8,14 @@ from sqlalchemy import (
     ForeignKey,
 )
 from sqlalchemy.orm import relationship
-from app.core.db import Base
+from core.db import Base
 
 
 # Абстрактная модель
 class BaseModel(Base):
     __abstract__ = True  # Не создаст таблицу в БД, так как это абстрактная модель
 
-    created_at = Column(DateTime, default=func.now(), nullable=False)
+    created_at = Column(DateTime, nullable=False)
     updated_at = Column(
         DateTime, default=func.now(), onupdate=func.now(), nullable=False
     )
