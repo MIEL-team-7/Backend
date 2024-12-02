@@ -22,6 +22,7 @@ admin.add_view(ManagerCandidateAdmin)
 
 register_routers(app)
 
+
 if __name__ == "__main__":
     logger.info("Запуск сервера...")
     uvicorn.run("app.main:app", host="localhost", port=8000, reload=True)
