@@ -50,7 +50,7 @@ class Manager(BaseUser):
 
 
 # Кандидат
-class Candidate(Base):
+class Candidate(BaseModel):
     __tablename__ = "candidates"
 
     id = Column(Integer, primary_key=True)
@@ -69,7 +69,7 @@ class Candidate(Base):
 
 
 # Офис
-class Office(Base):
+class Office(BaseModel):
     __tablename__ = "offices"
 
     id = Column(Integer, primary_key=True)
@@ -80,7 +80,7 @@ class Office(Base):
 
 
 # Связь между руководителем и кандидатом
-class ManagerCandidate(Base):
+class ManagerCandidate(BaseModel):
     __tablename__ = "manager_candidates"
 
     id = Column(Integer, primary_key=True)
@@ -93,7 +93,7 @@ class ManagerCandidate(Base):
 
 
 # Курсы кандидата
-class CandidateCourse(Base):
+class CandidateCourse(BaseModel):
     __tablename__ = "candidate_courses"
 
     id = Column(Integer, primary_key=True)
@@ -105,7 +105,7 @@ class CandidateCourse(Base):
 
 
 # Курсы
-class Course(Base):
+class Course(BaseModel):
     __tablename__ = "courses"
 
     id = Column(Integer, primary_key=True)
