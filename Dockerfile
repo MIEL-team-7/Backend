@@ -10,6 +10,6 @@ RUN pip install --no-cache-dir -r ../requirements.txt
 
 COPY . .
 
-CMD alembic upgrade head
+CMD ["alembic", "upgrade", "head"]
 
 EXPOSE 8000
