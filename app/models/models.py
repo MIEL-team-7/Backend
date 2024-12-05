@@ -48,7 +48,10 @@ class Manager(BaseUser):
     candidates = relationship("ManagerCandidate", back_populates="manager")
     office = relationship("Office", back_populates="managers")
 
+    def __repr__(self) -> str:
+        return f"{self.full_name}"
 
+      
 # Кандидат
 class Candidate(BaseModel):
     __tablename__ = "candidates"
@@ -68,7 +71,10 @@ class Candidate(BaseModel):
     courses = relationship("CandidateCourse", back_populates="candidate")
     skills = relationship("CandidateSkill", back_populates="candidate")
 
+    def __repr__(self) -> str:
+        return f"{self.full_name}"
 
+      
 # Офис
 class Office(BaseModel):
     __tablename__ = "offices"
@@ -79,7 +85,10 @@ class Office(BaseModel):
 
     managers = relationship("Manager", back_populates="office")
 
+    def __repr__(self) -> str:
+        return f"{self.name}"
 
+      
 # Связь между руководителем и кандидатом
 class ManagerCandidate(BaseModel):
     __tablename__ = "manager_candidates"
@@ -113,7 +122,11 @@ class Course(BaseModel):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
-    candidates = relationship("CandidateCourse", back_populates="course")
+
+    candidates = relationship("CandidateCourse", back_populates="course", lazy='joined')
+
+    def __repr__(self) -> str:
+        return f"{self.name}"
 
 
 # Навыки кандидата
