@@ -66,6 +66,7 @@ class Candidate(BaseModel):
 
     managers = relationship("ManagerCandidate", back_populates="candidate")
     courses = relationship("CandidateCourse", back_populates="candidate")
+    skills = relationship("CandidateSkill", back_populates="candidate")
 
 
 # Офис
@@ -133,4 +134,5 @@ class Skill(BaseModel):
 
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
+
     candidates = relationship("CandidateSkill", back_populates="skill")
