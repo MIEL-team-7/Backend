@@ -15,8 +15,8 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 # Авторизация руководителя и создание токена
 @app.post("/login")
-def login(username: str, password: str, db: AsyncSession = Depends(get_session)):
-    user = db.query(BaseUser).filter(BaseUser.username == username).first()
+def login(email: str, password: str, db: AsyncSession = Depends(get_session)):
+    user = db.query(BaseUser).filter(BaseUser.email == email).first()
     if not user or not verify_password(password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Неверный логин или пароль")
 
