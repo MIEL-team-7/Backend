@@ -29,3 +29,9 @@ class getCandidate(BaseModel):
     is_hired: bool
     clients: int
     objects: int
+
+
+class getOffice:
+    id: int
+    name: str
+    location: str

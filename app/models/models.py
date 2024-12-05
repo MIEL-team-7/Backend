@@ -87,6 +87,8 @@ class ManagerCandidate(BaseModel):
     done_by = Column(Integer, ForeignKey("managers.id"), index=True)
     candidate_id = Column(Integer, ForeignKey("candidates.id"), index=True)
     is_viewed = Column(Boolean, default=True, index=True)
+    is_favorite = Column(Boolean, default=False, index=True)
+    note = Column(String(255))
 
     manager = relationship("Manager", back_populates="candidates")
     candidate = relationship("Candidate", back_populates="managers")
@@ -111,3 +113,24 @@ class Course(BaseModel):
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
     candidates = relationship("CandidateCourse", back_populates="course")
+
+
+# Навыки кандидата
+class CandidateSkill(BaseModel):
+    __tablename__ = "candidate_skills"
+
+    id = Column(Integer, primary_key=True)
+    skill_id = Column(Integer, ForeignKey("skills.id"), index=True)
+    candidate_id = Column(Integer, ForeignKey("candidates.id"), index=True)
+
+    candidate = relationship("Candidate", back_populates="skills")
+    skill = relationship("Skill", back_populates="candidates")
+
+
+# Навыки
+class Skill(BaseModel):
+    __tablename__ = "skills"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100))
+    candidates = relationship("CandidateSkill", back_populates="skill")
