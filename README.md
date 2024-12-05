@@ -10,6 +10,7 @@
 ```bash
 git clone https://github.com/MIEL-team-7/Backend
 cd Backend
+git switch dev
 ```
 
 ### 2. Установка зависимостей
