@@ -1,8 +1,5 @@
-from typing import Annotated
-import uvicorn
 from sqladmin.authentication import AuthenticationBackend
-from sqladmin import Admin, ModelView
-from sqlalchemy.orm import joinedload
+from sqladmin import ModelView
 from starlette.requests import Request
 from app.models.models import Manager, Office, Candidate, Course, CandidateCourse, ManagerCandidate
 
@@ -39,7 +36,7 @@ class ManagerAdmin(ModelView, model=Manager):
 
 
 class OfficeAdmin(ModelView, model=Office):
-    column_list = [Office.id, Office.name, Office.location, 'managers_names']
+    column_list = [Office.id, Office.name, Office.location]
     column_searchable_list = [Office.id, Office.name, Office.location]
     column_sortable_list = [Office.id, Office.name, Office.location]
 
@@ -51,16 +48,21 @@ class CandidateAdmin(ModelView, model=Candidate):
 
 
 class CourseAdmin(ModelView, model=Course):
+
     column_list = [Course.id, Course.name, Course.candidates]
     column_searchable_list = [Course.id, Course.name, Course.candidates]
 
 
 class CandidateCourseAdmin(ModelView, model=CandidateCourse):
+
     column_list = [CandidateCourse.id, CandidateCourse.candidate, CandidateCourse.course]
-    column_searchable_list = [CandidateCourse.id, CandidateCourse.candidate, CandidateCourse.course]
+    column_searchable_list = [CandidateCourse.id]
+    column_sortable_list = [CandidateCourse.id]
 
 
 class ManagerCandidateAdmin(ModelView, model=ManagerCandidate):
+
     column_list =  [ManagerCandidate.id, ManagerCandidate.manager, ManagerCandidate.candidate, ManagerCandidate.is_viewed]
-    column_searchable_list = [ManagerCandidate.id, ManagerCandidate.candidate, ManagerCandidate.is_viewed]
+    column_searchable_list = [ManagerCandidate.id, ManagerCandidate.is_viewed]
     column_sortable_list = [ManagerCandidate.id, ManagerCandidate.is_viewed]
+

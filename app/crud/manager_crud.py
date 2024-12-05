@@ -2,8 +2,8 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from core.db import get_session
-from models.models import Manager, Candidate, ManagerCandidate
+from app.core.db import get_session
+from app.models.models import Manager, Candidate, ManagerCandidate
 
 
 async def read_manager_by_id(id: int, session: AsyncSession = Depends(get_session)):

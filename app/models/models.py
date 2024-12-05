@@ -8,14 +8,14 @@ from sqlalchemy import (
     ForeignKey,
 )
 from sqlalchemy.orm import relationship
-from core.db import Base
+from app.core.db import Base
 
 
 # Абстрактная модель
 class BaseModel(Base):
     __abstract__ = True  # Не создаст таблицу в БД, так как это абстрактная модель
 
-    created_at = Column(DateTime, nullable=False)
+    created_at = Column(DateTime, default=func.now(), nullable=False)
     updated_at = Column(
         DateTime, default=func.now(), onupdate=func.now(), nullable=False
     )
@@ -48,6 +48,8 @@ class Manager(BaseUser):
     candidates = relationship("ManagerCandidate", back_populates="manager")
     office = relationship("Office", back_populates="managers")
 
+    def __repr__(self) -> str:
+        return f"{self.full_name}"
 
 # Кандидат
 class Candidate(Base):
@@ -67,6 +69,8 @@ class Candidate(Base):
     managers = relationship("ManagerCandidate", back_populates="candidate")
     courses = relationship("CandidateCourse", back_populates="candidate")
 
+    def __repr__(self) -> str:
+        return f"{self.full_name}"
 
 # Офис
 class Office(Base):
@@ -78,6 +82,8 @@ class Office(Base):
 
     managers = relationship("Manager", back_populates="office")
 
+    def __repr__(self) -> str:
+        return f"{self.name}"
 
 # Связь между руководителем и кандидатом
 class ManagerCandidate(Base):
@@ -103,7 +109,6 @@ class CandidateCourse(Base):
     candidate = relationship("Candidate", back_populates="courses")
     course = relationship("Course", back_populates="candidates")
 
-
 # Курсы
 class Course(Base):
     __tablename__ = "courses"
@@ -111,4 +116,7 @@ class Course(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
 
-    candidates = relationship("CandidateCourse", back_populates="course")
+    candidates = relationship("CandidateCourse", back_populates="course", lazy='joined')
+
+    def __repr__(self) -> str:
+        return f"{self.name}"

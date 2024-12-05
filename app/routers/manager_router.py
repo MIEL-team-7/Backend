@@ -2,12 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_session
-from app.crud.manager_crud import (
+from crud.manager_crud import (
     read_manager_by_id,
     read_available_candidates,
     read_candidates_by_manager_id,
 )
-from app.schemas.manager_schema import getManager
+from schemas.manager_schema import getManager
 
 manager_router = APIRouter(
     prefix="/manager",
