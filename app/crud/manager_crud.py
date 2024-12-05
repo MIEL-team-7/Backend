@@ -4,13 +4,20 @@ from sqlalchemy.future import select
 
 from app.core.db import get_session
 from app.models.models import Manager, Candidate, ManagerCandidate
+from app.core.logging import logger
 
 
 async def read_manager_by_id(id: int, session: AsyncSession = Depends(get_session)):
     """Поиск руководителя по id"""
-    manager = await session.get(Manager, id)
+    logger.debug("Поиск руководителя по id: %s", id)
+
+    request = select(Manager).filter(Manager.id == id)
+    result = await session.execute(request)
+    manager = result.scalars().first()
     if manager:
+        logger.debug("Руководитель найден")
         return manager
+    logger.error("Руководитель не найден")
     return None
 
 
@@ -18,10 +25,13 @@ async def read_candidates_by_manager_id(
     manager_id: int, session: AsyncSession = Depends(get_session)
 ):
     """Получение кандидатов руководителя по id"""
+    logger.debug("Получение кандидатов руководителя по id: %s", manager_id)
+
     request = (
         select(Candidate)
-        .join(ManagerCandidate)
-        .filter(ManagerCandidate.done_by == manager_id)
+        .join(ManagerCandidate, Candidate.id == ManagerCandidate.candidate_id)
+        .join(Manager, Manager.id == ManagerCandidate.done_by)
+        .filter(Manager.id == manager_id)
     )
     result = await session.execute(request)
     candidates = result.scalars().all()
@@ -30,7 +40,25 @@ async def read_candidates_by_manager_id(
 
 async def read_available_candidates(session: AsyncSession = Depends(get_session)):
     """Получение доступных кандидатов"""
-    request = select(Candidate).filter(not Candidate.is_hired)
+    logger.debug("Получение доступных кандидатов")
+
+    request = select(Candidate).filter(Candidate.is_hired == False)
     result = await session.execute(request)
     available_candidates = result.scalars().all()
     return available_candidates
+
+
+async def read_candidate_by_id(
+    candidate_id: int, session: AsyncSession = Depends(get_session)
+):
+    """Поиск кандидата по id"""
+    logger.debug("Поиск кандидата по id: %s", candidate_id)
+
+    request = select(Candidate).filter(Candidate.id == candidate_id)
+    result = await session.execute(request)
+    candidate = result.scalars().first()
+    if candidate:
+        logger.debug("Кандидат найден")
+        return candidate
+    logger.error("Кандидат не найден")
+    return None
