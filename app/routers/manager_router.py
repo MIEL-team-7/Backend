@@ -20,12 +20,12 @@ manager_router = APIRouter(
 
 
 @manager_router.get(
-    "/", response_model=getManager
+    "/"
 )  # TODO: После мерджа с авторизацией сделать опредление id по токену
-async def get_manager(id: int, session: AsyncSession = Depends(get_session)):
+async def get_manager(manager_id: int, session: AsyncSession = Depends(get_session)):
     logger.debug("Запуск роутера /manager/")
 
-    manager = await read_manager_by_id(id, session)
+    manager = await read_manager_by_id(manager_id, session)
     if manager:
         return manager
     logger.error("Руководитель не найден")
@@ -33,7 +33,7 @@ async def get_manager(id: int, session: AsyncSession = Depends(get_session)):
 
 
 @manager_router.get(
-    "/get_candidates/", response_model=List[getCandidate]
+    "/get_candidates/"
 )  # TODO: После мерджа с авторизацией сделать опредление id по токену
 async def get_candidates_of_manager(
     manager_id: int, session: AsyncSession = Depends(get_session)
@@ -45,17 +45,17 @@ async def get_candidates_of_manager(
 
 
 @manager_router.get(
-    "/get_available_candidates/", response_model=List[getCandidate]
+    "/get_available_candidates/"
 )  # TODO: После мерджа с авторизацией сделать опредление id по токену
-async def get_available_candidates(session: AsyncSession = Depends(get_session)):
+async def get_available_candidates(manager_id: int, session: AsyncSession = Depends(get_session)):
     logger.debug("Запуск роутера manager/get_available_candidates/")
 
-    candidates = await read_available_candidates(session)
+    candidates = await read_available_candidates(manager_id,session)
     return candidates
 
 
 @manager_router.get(
-    "/get_candidate_by_id/", response_model=getCandidate
+    "/get_candidate_by_id/"
 )  # TODO: После мерджа с авторизацией сделать опредление id по токену
 async def get_candidate_by_id(
     candidate_id: int, session: AsyncSession = Depends(get_session)

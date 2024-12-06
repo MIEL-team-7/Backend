@@ -1,9 +1,10 @@
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
+from sqlalchemy.orm import selectinload
 
 from app.core.db import get_session
-from app.models.models import Manager, Candidate, ManagerCandidate
+from app.models.models import Manager, Candidate, ManagerCandidate, CandidateSkill, CandidateCourse
 from app.core.logging import logger
 
 
@@ -11,7 +12,12 @@ async def read_manager_by_id(id: int, session: AsyncSession = Depends(get_sessio
     """Поиск руководителя по id"""
     logger.debug("Поиск руководителя по id: %s", id)
 
-    request = select(Manager).filter(Manager.id == id)
+    request = (
+        select(Manager)
+        .filter(Manager.id == id)
+        .options(selectinload(Manager.candidates))
+        .options(selectinload(Manager.office))
+    )
     result = await session.execute(request)
     manager = result.scalars().first()
     if manager:
@@ -38,7 +44,7 @@ async def read_candidates_by_manager_id(
     return candidates
 
 
-async def read_available_candidates(session: AsyncSession = Depends(get_session)):
+async def read_available_candidates(manager_id: int, session: AsyncSession = Depends(get_session)):
     """Получение доступных кандидатов"""
     logger.debug("Получение доступных кандидатов")
 
@@ -54,7 +60,11 @@ async def read_candidate_by_id(
     """Поиск кандидата по id"""
     logger.debug("Поиск кандидата по id: %s", candidate_id)
 
-    request = select(Candidate).filter(Candidate.id == candidate_id)
+    request = (
+        select(Candidate)
+        .filter(Candidate.id == candidate_id)
+        .options(selectinload(Candidate.skills).selectinload(CandidateSkill.skill))
+    )
     result = await session.execute(request)
     candidate = result.scalars().first()
     if candidate:

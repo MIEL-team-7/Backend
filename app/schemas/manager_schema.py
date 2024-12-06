@@ -1,6 +1,28 @@
 from datetime import datetime
+from typing import List
 
 from pydantic import BaseModel
+
+
+class getOffice(BaseModel):
+    """Модель для сериализации офиса"""
+
+    id: int
+    name: str
+    location: str
+
+    class Config:
+        orm_mode = True
+
+
+class getSkill(BaseModel):
+    """Модель для сериализации навыка"""
+
+    id: int
+    name: str
+
+    class Config:
+        orm_mode = True
 
 
 class getManager(BaseModel):
@@ -10,10 +32,12 @@ class getManager(BaseModel):
     email: str
     full_name: str
     quotas: int
+    office: getOffice
     created_at: datetime
     updated_at: datetime
 
-    model_config = {"from_attributes": True}
+    class Config:
+        orm_mode = True
 
 
 class getCandidate(BaseModel):
@@ -29,9 +53,9 @@ class getCandidate(BaseModel):
     is_hired: bool
     clients: int
     objects: int
+    skills: List[getSkill] | None
+    created_at: datetime
+    updated_at: datetime
 
-
-class getOffice:
-    id: int
-    name: str
-    location: str
+    class Config:
+        orm_mode = True
