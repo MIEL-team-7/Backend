@@ -48,9 +48,12 @@ class Manager(BaseUser):
     candidates = relationship("ManagerCandidate", back_populates="manager")
     office = relationship("Office", back_populates="managers")
 
+    def __repr__(self) -> str:
+        return f"{self.full_name}"
 
+      
 # Кандидат
-class Candidate(Base):
+class Candidate(BaseModel):
     __tablename__ = "candidates"
 
     id = Column(Integer, primary_key=True)
@@ -66,10 +69,14 @@ class Candidate(Base):
 
     managers = relationship("ManagerCandidate", back_populates="candidate")
     courses = relationship("CandidateCourse", back_populates="candidate")
+    skills = relationship("CandidateSkill", back_populates="candidate")
 
+    def __repr__(self) -> str:
+        return f"{self.full_name}"
 
+      
 # Офис
-class Office(Base):
+class Office(BaseModel):
     __tablename__ = "offices"
 
     id = Column(Integer, primary_key=True)
@@ -78,22 +85,27 @@ class Office(Base):
 
     managers = relationship("Manager", back_populates="office")
 
+    def __repr__(self) -> str:
+        return f"{self.name}"
 
+      
 # Связь между руководителем и кандидатом
-class ManagerCandidate(Base):
+class ManagerCandidate(BaseModel):
     __tablename__ = "manager_candidates"
 
     id = Column(Integer, primary_key=True)
     done_by = Column(Integer, ForeignKey("managers.id"), index=True)
     candidate_id = Column(Integer, ForeignKey("candidates.id"), index=True)
     is_viewed = Column(Boolean, default=True, index=True)
+    is_favorite = Column(Boolean, default=False, index=True)
+    note = Column(String(255))
 
     manager = relationship("Manager", back_populates="candidates")
     candidate = relationship("Candidate", back_populates="managers")
 
 
 # Курсы кандидата
-class CandidateCourse(Base):
+class CandidateCourse(BaseModel):
     __tablename__ = "candidate_courses"
 
     id = Column(Integer, primary_key=True)
@@ -105,9 +117,35 @@ class CandidateCourse(Base):
 
 
 # Курсы
-class Course(Base):
+class Course(BaseModel):
     __tablename__ = "courses"
 
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
-    candidates = relationship("CandidateCourse", back_populates="course")
+
+    candidates = relationship("CandidateCourse", back_populates="course", lazy='joined')
+
+    def __repr__(self) -> str:
+        return f"{self.name}"
+
+
+# Навыки кандидата
+class CandidateSkill(BaseModel):
+    __tablename__ = "candidate_skills"
+
+    id = Column(Integer, primary_key=True)
+    skill_id = Column(Integer, ForeignKey("skills.id"), index=True)
+    candidate_id = Column(Integer, ForeignKey("candidates.id"), index=True)
+
+    candidate = relationship("Candidate", back_populates="skills")
+    skill = relationship("Skill", back_populates="candidates")
+
+
+# Навыки
+class Skill(BaseModel):
+    __tablename__ = "skills"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(100))
+
+    candidates = relationship("CandidateSkill", back_populates="skill")

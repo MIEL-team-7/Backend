@@ -43,7 +43,9 @@ async def login(response: Response, user_data: ManagerAuth):
 def protected_route(token: str = Depends(oauth2_scheme)):
     payload = decode_token(token)
     if payload is None:
-        raise HTTPException(status_code=401, detail="Неверный токен или срок действия истёк")
+        raise HTTPException(
+            status_code=401, detail="Неверный токен или срок действия истёк"
+        )
 
     return {"msg": f"Добро пожаловать, {payload['sub']}!"}
 
