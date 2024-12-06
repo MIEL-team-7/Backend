@@ -12,6 +12,7 @@ class Settings(BaseSettings):
     DB_NAME: str
     SECRET_KEY: str
     ALGORITHM: str
+    MINUT: int
 
 
 settings = Settings()
