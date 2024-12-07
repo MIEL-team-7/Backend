@@ -1,4 +1,4 @@
-from typing import List
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,8 +10,8 @@ from app.crud.manager_crud import (
     read_candidates_by_manager_id,
     read_candidate_by_id,
 )
-from app.schemas.manager_schema import getManager, getCandidate
 from app.core.logging import logger
+from app.utils.authentication import get_current_user
 
 manager_router = APIRouter(
     prefix="/manager",
@@ -22,10 +22,13 @@ manager_router = APIRouter(
 @manager_router.get(
     "/"
 )  # TODO: После мерджа с авторизацией сделать опредление id по токену
-async def get_manager(manager_id: int, session: AsyncSession = Depends(get_session)):
+async def get_manager(
+    current_user_id: Annotated[int, Depends(get_current_user)],
+    session: Annotated[AsyncSession, Depends(get_session)],
+):
     logger.debug("Запуск роутера /manager/")
 
-    manager = await read_manager_by_id(manager_id, session)
+    manager = await read_manager_by_id(current_user_id, session)
     if manager:
         return manager
     logger.error("Руководитель не найден")
@@ -36,21 +39,25 @@ async def get_manager(manager_id: int, session: AsyncSession = Depends(get_sessi
     "/get_candidates/"
 )  # TODO: После мерджа с авторизацией сделать опредление id по токену
 async def get_candidates_of_manager(
-    manager_id: int, session: AsyncSession = Depends(get_session)
+    current_user_id: Annotated[int, Depends(get_current_user)],
+    session: Annotated[AsyncSession, Depends(get_session)],
 ):
     logger.debug("Запуск роутера manager/get_candidates/")
 
-    candidates = await read_candidates_by_manager_id(manager_id, session)
+    candidates = await read_candidates_by_manager_id(current_user_id, session)
     return candidates
 
 
 @manager_router.get(
     "/get_available_candidates/"
 )  # TODO: После мерджа с авторизацией сделать опредление id по токену
-async def get_available_candidates(manager_id: int, session: AsyncSession = Depends(get_session)):
+async def get_available_candidates(
+    current_user_id: Annotated[int, Depends(get_current_user)],
+    session: Annotated[AsyncSession, Depends(get_session)],
+):
     logger.debug("Запуск роутера manager/get_available_candidates/")
 
-    candidates = await read_available_candidates(manager_id,session)
+    candidates = await read_available_candidates(session)
     return candidates
 
 
@@ -58,7 +65,9 @@ async def get_available_candidates(manager_id: int, session: AsyncSession = Depe
     "/get_candidate_by_id/"
 )  # TODO: После мерджа с авторизацией сделать опредление id по токену
 async def get_candidate_by_id(
-    candidate_id: int, session: AsyncSession = Depends(get_session)
+    current_user_id: Annotated[int, Depends(get_current_user)],
+    candidate_id: int,
+    session: Annotated[AsyncSession, Depends(get_session)],
 ):
     logger.debug("Запуск роутера manager/get_candidate_by_id/ с id: %s", candidate_id)
 

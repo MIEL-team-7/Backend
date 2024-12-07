@@ -12,7 +12,7 @@ class getOffice(BaseModel):
     location: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class getSkill(BaseModel):
@@ -22,7 +22,7 @@ class getSkill(BaseModel):
     name: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class getManager(BaseModel):
@@ -37,7 +37,7 @@ class getManager(BaseModel):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class getCandidate(BaseModel):
@@ -58,4 +58,4 @@ class getCandidate(BaseModel):
     updated_at: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True
