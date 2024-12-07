@@ -1,9 +1,9 @@
 from fastapi import Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from core.db import get_session
-from main import app
-from models.models import BaseUser
+from app.core.db import get_session
+from app.main import app
+from app.models.models import BaseUser
 
 
 """ # Создание пользователя не используем!!!
