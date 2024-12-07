@@ -1,5 +1,5 @@
 from app.routers.manager_router import manager_router
-from app.utils.autentif.authoriz import auth_router
+from app.routers.auth_router import auth_router
 
 
 def register_routers(app):

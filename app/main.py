@@ -4,7 +4,15 @@ from sqladmin import Admin
 
 from app.core.db import engine
 from app.core.logging import logger
-from app.utils.admin_panel import AdminAuth, ManagerAdmin, OfficeAdmin, CandidateAdmin, CourseAdmin, CandidateCourseAdmin, ManagerCandidateAdmin
+from app.utils.admin_panel import (
+    AdminAuth,
+    ManagerAdmin,
+    OfficeAdmin,
+    CandidateAdmin,
+    CourseAdmin,
+    CandidateCourseAdmin,
+    ManagerCandidateAdmin,
+)
 from app.utils.routers import register_routers
 
 app = FastAPI()
