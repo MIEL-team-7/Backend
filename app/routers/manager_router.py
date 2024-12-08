@@ -13,15 +13,14 @@ from app.crud.manager_crud import (
 from app.core.logging import logger
 from app.utils.authentication import get_current_user
 
+# Роутер для руководителя
 manager_router = APIRouter(
     prefix="/manager",
     tags=["Работа с руководителем"],
 )
 
 
-@manager_router.get(
-    "/"
-)  # TODO: После мерджа с авторизацией сделать опредление id по токену
+@manager_router.get("/")
 async def get_manager(
     current_user_id: Annotated[int, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_session)],
@@ -30,14 +29,13 @@ async def get_manager(
 
     manager = await read_manager_by_id(current_user_id, session)
     if manager:
+        logger.debug("Руководитель найден")
         return manager
     logger.error("Руководитель не найден")
     raise HTTPException(status_code=404, detail="Руководитель не найден")
 
 
-@manager_router.get(
-    "/get_candidates/"
-)  # TODO: После мерджа с авторизацией сделать опредление id по токену
+@manager_router.get("/get_candidates/")
 async def get_candidates_of_manager(
     current_user_id: Annotated[int, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_session)],
@@ -48,9 +46,7 @@ async def get_candidates_of_manager(
     return candidates
 
 
-@manager_router.get(
-    "/get_available_candidates/"
-)  # TODO: После мерджа с авторизацией сделать опредление id по токену
+@manager_router.get("/get_available_candidates/")
 async def get_available_candidates(
     current_user_id: Annotated[int, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_session)],
@@ -61,9 +57,7 @@ async def get_available_candidates(
     return candidates
 
 
-@manager_router.get(
-    "/get_candidate_by_id/"
-)  # TODO: После мерджа с авторизацией сделать опредление id по токену
+@manager_router.get("/get_candidate_by_id/")
 async def get_candidate_by_id(
     current_user_id: Annotated[int, Depends(get_current_user)],
     candidate_id: int,
@@ -73,6 +67,7 @@ async def get_candidate_by_id(
 
     candidate = await read_candidate_by_id(candidate_id, session)
     if candidate:
+        logger.debug("Кандидат найден")
         return candidate
     logger.error("Кандидат не найден")
 
