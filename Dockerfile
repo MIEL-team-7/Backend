@@ -2,7 +2,6 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-COPY .env.docker .env
 COPY ./requirements.txt /app/requirements.txt
 COPY ./alembic.ini /app/alembic.ini
 COPY ./migrations /app/migrations
@@ -10,4 +9,4 @@ COPY ./migrations /app/migrations
 RUN pip install --no-cache-dir --upgrade pip
 RUN pip install --no-cache-dir -r /app/requirements.txt
 
-COPY ./app /app/app
+COPY ./app/ /app/app/
