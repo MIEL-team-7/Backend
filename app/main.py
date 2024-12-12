@@ -24,7 +24,7 @@ app = FastAPI()
 origins = [
     "http://localhost:3000",
     "http://127.0.0.1:3000",
-    "https://poopsss-mielfrontreact-75f6.twc1.net",
+    "https://poopsss-mielfrontreact-9b64.twc1.net",
 ]
 
 # Добавляем CORS
