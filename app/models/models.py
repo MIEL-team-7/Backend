@@ -3,6 +3,7 @@ from sqlalchemy import (
     Integer,
     String,
     Boolean,
+    Date,
     DateTime,
     func,
     ForeignKey,
@@ -60,9 +61,11 @@ class Candidate(BaseModel):
     photo = Column(String(255))  # Путь к фото
     full_name = Column(String(100))
     email = Column(String(100), unique=True)
+    date_of_birth = Column(Date)
     location = Column(String(100))
     resume = Column(String(255))  # Путь к резюме
     phone = Column(String(100), unique=True)
+    years_of_experience = Column(Integer, default=0)
     is_hired = Column(Boolean, default=False, index=True)
     clients = Column(Integer, default=0)
     objects = Column(Integer, default=0)
