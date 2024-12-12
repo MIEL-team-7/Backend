@@ -3,7 +3,6 @@ from fastapi import FastAPI
 from sqladmin import Admin
 
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
 
 from app.core.db import engine
@@ -36,9 +35,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# Подключаем статические файлы(фото, резюме)
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
 # Подключаем админку
 authentication_backend = AdminAuth(secret_key="...")
