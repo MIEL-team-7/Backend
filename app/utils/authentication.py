@@ -5,7 +5,7 @@ from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException, status
 from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
-from jose import JWTError
+from jwt import PyJWTError
 import jwt
 
 
@@ -74,7 +74,7 @@ async def get_current_user(
         user_email = payload.get("sub")
         if user_email is None:
             raise credentials_exception
-    except JWTError:
+    except PyJWTError:
         raise credentials_exception
 
     user = await read_user_by_email(user_email, session)
