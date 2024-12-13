@@ -17,5 +17,5 @@ admin.add_view(CandidateCourseAdmin)
 admin.add_view(ManagerCandidateAdmin)
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="localhost", port=8012, reload=True)
+    uvicorn.run("app.main:app", host="localhost", port=8000, reload=True)
 
