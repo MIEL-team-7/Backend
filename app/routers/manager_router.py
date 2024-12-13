@@ -1,6 +1,6 @@
-from typing import Annotated
+from typing import Annotated, List
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_session
@@ -50,10 +50,13 @@ async def get_candidates_of_manager(
 async def get_available_candidates(
     current_user_id: Annotated[int, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_session)],
+    courses: Annotated[List[int] | None, Query()] = None,
+    min_age: int = None,
+    max_age: int = None,
 ):
     logger.debug("Запуск роутера manager/get_available_candidates/")
 
-    candidates = await read_available_candidates(session)
+    candidates = await read_available_candidates(session, min_age=min_age, max_age=max_age, courses=courses)
     return candidates
 
 
