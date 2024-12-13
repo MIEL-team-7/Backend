@@ -1,18 +1,8 @@
-import asyncio
-
 from sqladmin.authentication import AuthenticationBackend
 from sqladmin import ModelView
-from sqlalchemy.ext.asyncio import AsyncSession
-
 from starlette.requests import Request
 from models.models import Manager, Office, Candidate, Course, CandidateCourse, ManagerCandidate
 from passlib.context import CryptContext
-from app.core.db import engine
-from sqlalchemy.future import select
-
-
-
-
 
 class AdminAuth(AuthenticationBackend):
     async def login(self, request: Request) -> bool:

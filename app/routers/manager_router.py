@@ -7,7 +7,7 @@ from app.crud.manager_crud import (
     read_available_candidates,
     read_candidates_by_manager_id,
 )
-from schemas.manager_schema import getManager
+from app.schemas.manager_schema import getManager
 
 manager_router = APIRouter(
     prefix="/manager",
