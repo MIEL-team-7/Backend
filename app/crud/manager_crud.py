@@ -1,5 +1,5 @@
 import datetime
-from typing import Annotated
+from typing import Annotated, List
 
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -10,7 +10,6 @@ from app.core.db import get_session
 from app.models.models import (
     Manager,
     Candidate,
-    Course,
     ManagerCandidate,
     CandidateCourse,
     CandidateSkill,
@@ -67,14 +66,15 @@ async def read_available_candidates(
     session: Annotated[AsyncSession, Depends(get_session)],
     min_age: int = None,
     max_age: int = None,
-    courses: list[int] = None,
+    courses: List[int] = None,
+    sort_by: str = None,
 ):
     """Получение доступных кандидатов"""
     logger.debug("Получение доступных кандидатов")
 
     request = select(Candidate).where(Candidate.is_hired == False)
 
-    # Филтрация по возрасту
+    # Фильтрация по возрасту
     if min_age:
         today = datetime.date.today()
         max_date = today.replace(year=today.year - min_age)
@@ -84,10 +84,19 @@ async def read_available_candidates(
         today = datetime.date.today()
         min_date = today.replace(year=today.year - max_age)
         request = request.where(Candidate.date_of_birth >= min_date)
-    
-    # Филтрация по курсам
+
+    # Фильтрация по курсам
     if courses:
-        request = request.join(Candidate.courses).where(CandidateCourse.course_id.in_(courses))
+        request = request.join(Candidate.courses).where(
+            CandidateCourse.course_id.in_(courses)
+        )
+
+    # Сортировка
+    # if sort_by == sortBy.is_invited:
+    #     logger.debug("Сортировка по приглашенности")
+
+    #     subquery = select(exists().where(ManagerCandidate.candidate_id == Candidate.id)).correlate(Candidate).label("is_invited")
+    #     request = request.add_columns(subquery).order_by(subquery)
 
     result = await session.execute(request)
     available_candidates = result.scalars().all()

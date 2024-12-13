@@ -12,6 +12,7 @@ from app.crud.manager_crud import (
 )
 from app.core.logging import logger
 from app.utils.authentication import get_current_user
+from app.schemas.manager_schema import sortBy
 
 # Роутер для руководителя
 manager_router = APIRouter(
@@ -51,12 +52,15 @@ async def get_available_candidates(
     current_user_id: Annotated[int, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_session)],
     courses: Annotated[List[int] | None, Query()] = None,
+    sort_by: Annotated[str, Query(alias="sortBy")] = sortBy.is_hired,
     min_age: int = None,
     max_age: int = None,
 ):
     logger.debug("Запуск роутера manager/get_available_candidates/")
 
-    candidates = await read_available_candidates(session, min_age=min_age, max_age=max_age, courses=courses)
+    candidates = await read_available_candidates(
+        session, min_age=min_age, max_age=max_age, courses=courses, sort_by=sort_by
+    )
     return candidates
 
 
