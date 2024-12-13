@@ -8,7 +8,7 @@ from sqlalchemy import (
     ForeignKey,
 )
 from sqlalchemy.orm import relationship
-from app.core.db import Base
+from core.db import Base
 
 
 # Абстрактная модель
@@ -73,7 +73,7 @@ class Candidate(Base):
         return f"{self.full_name}"
 
 # Офис
-class Office(Base):
+class Office(BaseModel):
     __tablename__ = "offices"
 
     id = Column(Integer, primary_key=True)
@@ -86,7 +86,7 @@ class Office(Base):
         return f"{self.name}"
 
 # Связь между руководителем и кандидатом
-class ManagerCandidate(Base):
+class ManagerCandidate(BaseModel):
     __tablename__ = "manager_candidates"
 
     id = Column(Integer, primary_key=True)
@@ -99,7 +99,7 @@ class ManagerCandidate(Base):
 
 
 # Курсы кандидата
-class CandidateCourse(Base):
+class CandidateCourse(BaseModel):
     __tablename__ = "candidate_courses"
 
     id = Column(Integer, primary_key=True)
@@ -110,7 +110,7 @@ class CandidateCourse(Base):
     course = relationship("Course", back_populates="candidates")
 
 # Курсы
-class Course(Base):
+class Course(BaseModel):
     __tablename__ = "courses"
 
     id = Column(Integer, primary_key=True)

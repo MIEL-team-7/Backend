@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from sqladmin import Admin
-from app.core.db import engine
+from core.db import engine
 from utils.admin_panel import AdminAuth, ManagerAdmin, OfficeAdmin, CandidateAdmin, CourseAdmin, CandidateCourseAdmin, ManagerCandidateAdmin
 
 app = FastAPI()
@@ -17,5 +17,5 @@ admin.add_view(CandidateCourseAdmin)
 admin.add_view(ManagerCandidateAdmin)
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="localhost", port=8000, reload=True)
+    uvicorn.run("main:app", host="localhost", port=8012, reload=True)
 

@@ -1,8 +1,8 @@
-"""Initial migration
+"""init
 
-Revision ID: 14a5a6b86cf9
+Revision ID: cf3a9b7c901c
 Revises: 
-Create Date: 2024-11-30 19:43:11.220235
+Create Date: 2024-12-13 19:38:13.273323
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = '14a5a6b86cf9'
+revision: str = 'cf3a9b7c901c'
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -49,18 +49,24 @@ def upgrade() -> None:
     op.create_table('courses',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('offices',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=100), nullable=True),
     sa.Column('location', sa.String(length=100), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('candidate_courses',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('course_id', sa.Integer(), nullable=True),
     sa.Column('candidate_id', sa.Integer(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['candidate_id'], ['candidates.id'], ),
     sa.ForeignKeyConstraint(['course_id'], ['courses.id'], ),
     sa.PrimaryKeyConstraint('id')
@@ -86,6 +92,8 @@ def upgrade() -> None:
     sa.Column('done_by', sa.Integer(), nullable=True),
     sa.Column('candidate_id', sa.Integer(), nullable=True),
     sa.Column('is_viewed', sa.Boolean(), nullable=True),
+    sa.Column('created_at', sa.DateTime(), nullable=False),
+    sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['candidate_id'], ['candidates.id'], ),
     sa.ForeignKeyConstraint(['done_by'], ['managers.id'], ),
     sa.PrimaryKeyConstraint('id')
