@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from starlette.requests import Request
 from models.models import Manager, Office, Candidate, Course, CandidateCourse, ManagerCandidate
 from passlib.context import CryptContext
-from core.db import engine
+from app.core.db import engine
 from sqlalchemy.future import select
 
 

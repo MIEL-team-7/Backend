@@ -2,7 +2,7 @@ from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 
-from core.db import get_session
+from app.core.db import get_session
 from models.models import Manager, Candidate, ManagerCandidate
 
 

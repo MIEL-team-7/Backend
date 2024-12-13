@@ -1,7 +1,7 @@
 import uvicorn
 from fastapi import FastAPI
 from sqladmin import Admin
-from core.db import engine
+from app.core.db import engine
 from utils.admin_panel import AdminAuth, ManagerAdmin, OfficeAdmin, CandidateAdmin, CourseAdmin, CandidateCourseAdmin, ManagerCandidateAdmin
 
 app = FastAPI()
