@@ -51,8 +51,12 @@ class ManagerAdmin(ModelView, model=Manager):
         Manager.full_name: "ФИО",
         Manager.email: "Электронная почта",
         Manager.office: "Офис",
-        Manager.quotas: "Квота"
+        Manager.quotas: "Квота",
+        Manager.password: "Пароль",
+        Manager.candidates: "Кандидаты"
     }
+
+
 
 
 
