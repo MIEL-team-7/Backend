@@ -4,6 +4,7 @@ from starlette.requests import Request
 from app.models.models import Manager, Office, Candidate, Course, CandidateCourse, ManagerCandidate
 from passlib.context import CryptContext
 
+
 class AdminAuth(AuthenticationBackend):
     async def login(self, request: Request) -> bool:
         form = await request.form()
