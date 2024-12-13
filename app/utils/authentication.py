@@ -5,9 +5,13 @@ from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, HTTPException, status
 from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
+<<<<<<< Updated upstream
 from jose import JWTError
 import jwt
 
+=======
+from jose import jwt, JWTError
+>>>>>>> Stashed changes
 
 from app.core.config import settings
 from app.core.db import get_session

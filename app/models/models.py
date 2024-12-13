@@ -1,3 +1,5 @@
+from os.path import join
+
 from sqlalchemy import (
     Column,
     Integer,
@@ -8,7 +10,9 @@ from sqlalchemy import (
     ForeignKey,
 )
 from sqlalchemy.orm import relationship
+from fastapi_storages.integrations.sqlalchemy import FileType, ImageType
 from app.core.db import Base
+from app.utils.file_upload import storageF, storageI
 
 
 # Абстрактная модель
@@ -28,6 +32,7 @@ class BaseUser(BaseModel):
     id = Column(Integer, primary_key=True)
     email = Column(String(100), unique=True)
     password = Column(String(100))
+    photo = Column(String(255))  # Путь к фото
 
 
 # Администратор
@@ -47,6 +52,10 @@ class Manager(BaseUser):
 
     candidates = relationship("ManagerCandidate", back_populates="manager")
     office = relationship("Office", back_populates="managers")
+
+    @property
+    def photo_url(self):
+        return f"/static/photo/{self.photo}" if self.photo else None
 
     def __repr__(self) -> str:
         return f"{self.full_name}"
@@ -70,6 +79,10 @@ class Candidate(BaseModel):
     managers = relationship("ManagerCandidate", back_populates="candidate")
     courses = relationship("CandidateCourse", back_populates="candidate")
     skills = relationship("CandidateSkill", back_populates="candidate")
+
+    @property
+    def full_photo_path(self):
+        return join(storageI, self.photo)
 
     def __repr__(self) -> str:
         return f"{self.full_name}"
