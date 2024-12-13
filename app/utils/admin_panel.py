@@ -1,7 +1,7 @@
 from sqladmin.authentication import AuthenticationBackend
 from sqladmin import ModelView
 from starlette.requests import Request
-from models.models import Manager, Office, Candidate, Course, CandidateCourse, ManagerCandidate
+from app.models.models import Manager, Office, Candidate, Course, CandidateCourse, ManagerCandidate
 from passlib.context import CryptContext
 
 class AdminAuth(AuthenticationBackend):
@@ -50,8 +50,12 @@ class ManagerAdmin(ModelView, model=Manager):
         Manager.full_name: "ФИО",
         Manager.email: "Электронная почта",
         Manager.office: "Офис",
-        Manager.quotas: "Квота"
+        Manager.quotas: "Квота",
+        Manager.password: "Пароль",
+        Manager.candidates: "Кандидаты"
     }
+
+
 
 
 

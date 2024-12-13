@@ -22,4 +22,4 @@ admin.add_view(ManagerCandidateAdmin)
 
 if __name__ == "__main__":
     logger.info("Запуск сервера...")
-    uvicorn.run("app.main:app", host="localhost", port=8000, reload=True)
+    uvicorn.run("app.main:app", host="localhost", port=8080, reload=True)
