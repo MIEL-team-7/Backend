@@ -1,15 +1,17 @@
-from typing import Annotated
+import datetime
+from typing import Annotated, List
 
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy.orm import selectinload
+from sqlalchemy.orm import selectinload, joinedload
 
 from app.core.db import get_session
 from app.models.models import (
     Manager,
     Candidate,
     ManagerCandidate,
+    CandidateCourse,
     CandidateSkill,
 )
 from app.core.logging import logger
@@ -20,20 +22,25 @@ async def read_manager_by_id(
     session: Annotated[AsyncSession, Depends(get_session)],
 ):
     """Поиск руководителя по id"""
-    logger.debug("Поиск руководителя по id: %s", id)
+    logger.debug("Поиск руководителя по id: %s", manager_id)
 
     request = (
         select(Manager)
-        .filter(Manager.id == manager_id)
-        .options(selectinload(Manager.candidates))
+        .where(Manager.id == manager_id)
+        .options(
+            joinedload(Manager.candidates).selectinload(ManagerCandidate.candidate)
+        )
         .options(selectinload(Manager.office))
     )
+
     result = await session.execute(request)
     manager = result.scalars().first()
+
     if manager:
         logger.debug("Руководитель найден")
         return manager
     logger.error("Руководитель не найден")
+
     return None
 
 
@@ -46,23 +53,54 @@ async def read_candidates_by_manager_id(
     request = (
         select(Candidate)
         .join(ManagerCandidate, Candidate.id == ManagerCandidate.candidate_id)
-        .join(Manager, Manager.id == ManagerCandidate.done_by)
-        .filter(Manager.id == manager_id)
+        .where(ManagerCandidate.done_by == manager_id)
     )
+
     result = await session.execute(request)
     candidates = result.scalars().all()
+
     return candidates
 
 
 async def read_available_candidates(
     session: Annotated[AsyncSession, Depends(get_session)],
+    min_age: int = None,
+    max_age: int = None,
+    courses: List[int] = None,
+    sort_by: str = None,
 ):
     """Получение доступных кандидатов"""
     logger.debug("Получение доступных кандидатов")
 
-    request = select(Candidate).filter(Candidate.is_hired == False)
+    request = select(Candidate).where(Candidate.is_hired == False)
+
+    # Фильтрация по возрасту
+    if min_age:
+        today = datetime.date.today()
+        max_date = today.replace(year=today.year - min_age)
+        request = request.where(Candidate.date_of_birth <= max_date)
+
+    if max_age:
+        today = datetime.date.today()
+        min_date = today.replace(year=today.year - max_age)
+        request = request.where(Candidate.date_of_birth >= min_date)
+
+    # Фильтрация по курсам
+    if courses:
+        request = request.join(Candidate.courses).where(
+            CandidateCourse.course_id.in_(courses)
+        )
+
+    # Сортировка
+    # if sort_by == sortBy.is_invited:
+    #     logger.debug("Сортировка по приглашенности")
+
+    #     subquery = select(exists().where(ManagerCandidate.candidate_id == Candidate.id)).correlate(Candidate).label("is_invited")
+    #     request = request.add_columns(subquery).order_by(subquery)
+
     result = await session.execute(request)
     available_candidates = result.scalars().all()
+
     return available_candidates
 
 
@@ -74,13 +112,17 @@ async def read_candidate_by_id(
 
     request = (
         select(Candidate)
-        .filter(Candidate.id == candidate_id)
+        .where(Candidate.id == candidate_id)
+        .options(selectinload(Candidate.courses).joinedload(CandidateCourse.course))
         .options(selectinload(Candidate.skills).selectinload(CandidateSkill.skill))
     )
+
     result = await session.execute(request)
     candidate = result.scalars().first()
+
     if candidate:
         logger.debug("Кандидат найден")
         return candidate
     logger.error("Кандидат не найден")
+
     return None

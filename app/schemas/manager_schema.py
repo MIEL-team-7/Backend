@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import List
+from enum import Enum
 
 from pydantic import BaseModel
 
@@ -59,3 +60,8 @@ class getCandidate(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class sortBy(str, Enum):
+    is_invited = "is_invited"
+    is_hired = "is_hired"
