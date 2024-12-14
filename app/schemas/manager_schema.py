@@ -64,4 +64,4 @@ class getCandidate(BaseModel):
 
 class sortBy(str, Enum):
     is_invited = "is_invited"
-    is_hired = "is_hired"
+    is_free = "is_free"

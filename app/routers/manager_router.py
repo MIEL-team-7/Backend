@@ -52,7 +52,7 @@ async def get_available_candidates(
     current_user_id: Annotated[int, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_session)],
     courses: Annotated[List[int] | None, Query()] = None,
-    sort_by: Annotated[str, Query(alias="sortBy")] = sortBy.is_hired,
+    sort_by: Annotated[str, Query(alias="sortBy")] = sortBy.is_invited,
     min_age: int = None,
     max_age: int = None,
 ):

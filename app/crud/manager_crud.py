@@ -14,6 +14,7 @@ from app.models.models import (
     CandidateCourse,
     CandidateSkill,
 )
+from app.schemas.manager_schema import sortBy
 from app.core.logging import logger
 
 
@@ -76,27 +77,36 @@ async def read_available_candidates(
 
     # Фильтрация по возрасту
     if min_age:
+        logger.debug("Фильтрация по возрасту: %s", min_age)
+
         today = datetime.date.today()
         max_date = today.replace(year=today.year - min_age)
         request = request.where(Candidate.date_of_birth <= max_date)
 
     if max_age:
+        logger.debug("Фильтрация по возрасту: %s", max_age)
+
         today = datetime.date.today()
         min_date = today.replace(year=today.year - max_age)
         request = request.where(Candidate.date_of_birth >= min_date)
 
     # Фильтрация по курсам
     if courses:
+        logger.debug("Фильтрация по курсам: %s", courses)
+
         request = request.join(Candidate.courses).where(
             CandidateCourse.course_id.in_(courses)
         )
 
     # Сортировка
-    # if sort_by == sortBy.is_invited:
-    #     logger.debug("Сортировка по приглашенности")
+    if sort_by == sortBy.is_invited:
+        logger.debug("Сортировка по приглашенности")
 
-    #     subquery = select(exists().where(ManagerCandidate.candidate_id == Candidate.id)).correlate(Candidate).label("is_invited")
-    #     request = request.add_columns(subquery).order_by(subquery)
+        request = request.join(ManagerCandidate, Candidate.id == ManagerCandidate.candidate_id).group_by(Candidate.id, ManagerCandidate.is_invited).order_by(ManagerCandidate.is_invited == True)
+    elif sort_by == sortBy.is_free:
+        logger.debug("Сортировка по свободности")
+
+        request = request.join(ManagerCandidate, Candidate.id == ManagerCandidate.candidate_id).group_by(Candidate.id, ManagerCandidate.is_invited).order_by(ManagerCandidate.is_invited == False)
 
     result = await session.execute(request)
     available_candidates = result.scalars().all()
