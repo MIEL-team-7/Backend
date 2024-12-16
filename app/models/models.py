@@ -11,6 +11,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from app.core.db import Base
 
+
 # Абстрактная модель
 class BaseModel(Base):
     __abstract__ = True  # Не создаст таблицу в БД, так как это абстрактная модель
