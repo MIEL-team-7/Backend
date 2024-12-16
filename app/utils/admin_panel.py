@@ -1,19 +1,13 @@
-from sqladmin.authentication import AuthenticationBackend
-from sqladmin import ModelView
+from fastapi import UploadFile
 from starlette.requests import Request
-<<<<<<< Updated upstream
-from app.models.models import (
-    Manager,
-    Office,
-    Candidate,
-    Course,
-    CandidateCourse,
-    ManagerCandidate,
-)
-=======
-from app.models.models import Manager, Office, Candidate, Course, CandidateCourse, ManagerCandidate
+from flask_admin import form
+from flask_admin.form import FileUploadField
 from passlib.context import CryptContext
->>>>>>> Stashed changes
+from sqladmin import ModelView
+from sqladmin.authentication import AuthenticationBackend
+
+from app.models.models import Manager, Office, Candidate, Course, CandidateCourse, ManagerCandidate
+from app.utils.file_upload import storageI, photo
 
 
 class AdminAuth(AuthenticationBackend):
@@ -21,7 +15,6 @@ class AdminAuth(AuthenticationBackend):
         form = await request.form()
         print(type(form))
         username, password = form["username"], form["password"]
-
 
         request.session.update({"token": "..."})
         return True
@@ -41,17 +34,47 @@ class AdminAuth(AuthenticationBackend):
         return True
 
 
-
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
+
 class ManagerAdmin(ModelView, model=Manager):
-<<<<<<< Updated upstream
+    name = "Руководитель"
+    name_plural = "Руководители"
+
+    form_extra_fields = {
+        'photo': form.FileUploadField('Загрузите фотографию', base_path='static/photo/',
+                                      allowed_extensions=['jpg', 'png', 'gif']),
+    }
+
+    form_overrides = {'photo': FileUploadField}
+
+    form_args = {
+        'photo': {
+            'label': 'Загрузка фотографии',
+            'base_path': 'static/photo/',  # Укажите путь для загрузки файлов
+            'relative_path': 'photo/'
+        }
+    }
+
+    async def on_model_change(self, data: dict, model: Manager, is_created: bool, request: Request) -> None:
+        # Получаем данные формы
+        form_data = await request.form()
+        if is_created and 'photo' in form_data:
+            photo_file = form_data['photo']
+            filename = await storageI.upload(photo_file)  # загружаем файл
+            model.photo = filename  # сохраняем имя файла в модели
+        else:
+            print("нет фотографии")
+
+        if is_created:
+            data["password"] = pwd_context.hash(data["password"])
+
     column_list = [
+        Manager.photo,
         Manager.full_name,
         Manager.email,
         Manager.office,
-        Manager.candidates,
-        Manager.quotas,
+        Manager.quotas
     ]
     form_columns = [
         Manager.full_name,
@@ -60,25 +83,8 @@ class ManagerAdmin(ModelView, model=Manager):
         Manager.quotas,
         Manager.office,
         Manager.candidates,
+        Manager.photo
     ]
-    column_searchable_list = [
-        Manager.full_name,
-        Manager.email,
-        Manager.quotas,
-        Manager.office,
-    ]
-    column_sortable_list = [Manager.full_name, Manager.email, Manager.quotas]
-=======
-    name = "Руководитель"
-    name_plural = "Руководители"
-
-    async def on_model_change(self, data: dict, model: Manager, is_created: bool, request: Request) -> None:
-
-        if is_created:
-            data["password"] = pwd_context.hash(data["password"])
-
-    column_list = [Manager.photo, Manager.full_name, Manager.email, Manager.office, Manager.quotas]
-    form_columns = [Manager.full_name, Manager.email, Manager.password, Manager.quotas, Manager.office, Manager.candidates, Manager.photo]
     column_searchable_list = [Manager.photo, Manager.full_name, Manager.email, Manager.quotas, Manager.office]
     column_sortable_list = [Manager.photo, Manager.full_name, Manager.email, Manager.quotas]
 
@@ -91,7 +97,6 @@ class ManagerAdmin(ModelView, model=Manager):
         Manager.candidates: "Кандидаты",
         Manager.photo: "Фотография"
     }
->>>>>>> Stashed changes
 
 
 class OfficeAdmin(ModelView, model=Office):
@@ -110,41 +115,33 @@ class OfficeAdmin(ModelView, model=Office):
     }
 
 class CandidateAdmin(ModelView, model=Candidate):
-<<<<<<< Updated upstream
-    column_list = [
-        Candidate.id,
-        Candidate.full_name,
-        Candidate.email,
-        Candidate.location,
-        Candidate.phone,
-        Candidate.is_hired,
-        Candidate.clients,
-        Candidate.objects,
-        Candidate.managers,
-    ]
-    column_searchable_list = [
-        Candidate.id,
-        Candidate.full_name,
-        Candidate.email,
-        Candidate.location,
-        Candidate.objects,
-    ]
-    column_sortable_list = [
-        Candidate.id,
-        Candidate.full_name,
-        Candidate.email,
-        Candidate.location,
-        Candidate.phone,
-        Candidate.is_hired,
-        Candidate.clients,
-        Candidate.objects,
-    ]
-
-
-class CourseAdmin(ModelView, model=Course):
-=======
     name = "Кандидат"
     name_plural = "Кандидаты"
+
+    form_extra_fields = {
+        'photo': form.FileUploadField('Загрузите фотографию', base_path='static/photo/'),
+    }
+
+    form_overrides = {
+        'photo': FileUploadField
+    }
+
+    form_args = {
+        'photo': {
+            'label': 'Загрузка фотографии',
+            'base_path': 'static/photo/',  # Укажите путь для загрузки файлов
+            'relative_path': 'static/photo/'
+        }
+    }
+    async def on_model_change(self, data: dict, model: Manager, is_created: bool, request: Request) -> None:
+        # Получаем данные формы
+        form_data = await request.form()
+        if is_created and 'photo' in form_data:
+            photo_file = form_data['photo']
+            filename = await storageI.upload(photo_file)  # загружаем файл
+            model.photo = filename  # сохраняем имя файла в модели
+        else:
+            print("нет фотографии")
 
     column_list = [Candidate.photo, Candidate.id, Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects, Candidate.courses]
     column_searchable_list = [Candidate.photo, Candidate.id, Candidate.full_name, Candidate.email, Candidate.location, Candidate.objects]
@@ -167,7 +164,6 @@ class CourseAdmin(ModelView, model=Course):
     name = "Курс"
     name_plural = "Курсы"
 
->>>>>>> Stashed changes
     column_list = [Course.id, Course.name, Course.candidates]
     column_searchable_list = [Course.id, Course.name, Course.candidates]
     form_columns = [Course.name]
@@ -178,18 +174,10 @@ class CourseAdmin(ModelView, model=Course):
     }
 
 class CandidateCourseAdmin(ModelView, model=CandidateCourse):
-<<<<<<< Updated upstream
-    column_list = [
-        CandidateCourse.id,
-        CandidateCourse.candidate,
-        CandidateCourse.course,
-    ]
-=======
     name = "Кандидат-курс"
     name_plural = "Кандидаты-курсы"
 
     column_list = [CandidateCourse.id, CandidateCourse.candidate, CandidateCourse.course]
->>>>>>> Stashed changes
     column_searchable_list = [CandidateCourse.id]
     column_sortable_list = [CandidateCourse.id]
     form_columns = [CandidateCourse.candidate, CandidateCourse.course]
@@ -200,16 +188,6 @@ class CandidateCourseAdmin(ModelView, model=CandidateCourse):
     }
 
 class ManagerCandidateAdmin(ModelView, model=ManagerCandidate):
-<<<<<<< Updated upstream
-    column_list = [
-        ManagerCandidate.id,
-        ManagerCandidate.manager,
-        ManagerCandidate.candidate,
-        ManagerCandidate.is_viewed,
-    ]
-    column_searchable_list = [ManagerCandidate.id, ManagerCandidate.is_viewed]
-    column_sortable_list = [ManagerCandidate.id, ManagerCandidate.is_viewed]
-=======
     name = "История приглашений"
     name_plural = "История приглашений"
 
@@ -238,4 +216,3 @@ class ManagerCandidateAdmin(ModelView, model=ManagerCandidate):
 
     column_formatters = {ManagerCandidate.created_at: get_created_at,
                          ManagerCandidate.updated_at: get_updated_at}
->>>>>>> Stashed changes

@@ -1,9 +1,17 @@
+
 import os
+import uuid
+import aiofiles
+
 from fastapi import UploadFile, HTTPException
 from fastapi.responses import FileResponse
 from typing import Optional, List
 
+from fastapi_storages.integrations.sqlalchemy import ImageType
+from sqlalchemy import Column
+
 from app.routers.photo_router import photo_router
+
 
 
 class FileSystemStorage:
@@ -15,6 +23,7 @@ class FileSystemStorage:
 
     async def upload(self, file: UploadFile):
         filename = file.filename
+        unique_filename = f"{uuid.uuid4()}_{filename}"
         content = await file.read()
 
         file_size = len(content)
@@ -25,18 +34,21 @@ class FileSystemStorage:
             if not any(filename.endswith(ext) for ext in self.allow_extensions):
                 raise HTTPException(status_code=400,
                                     detail=f"Расширение файла недопустимо. Допустимые: {self.allow_extensions}")
+        print(unique_filename)
+        file_path = os.path.join(self.path, unique_filename)
 
-        file_path = os.path.join(self.path, filename)
-        with open(file_path, "wb") as f:
-            f.write(content)
+        async with aiofiles.open(file_path, "wb") as f:
+            await f.write(content)
 
-        return filename
+        return unique_filename
+
 
 
 # Инициализация хранилищ для файлов и фотографий
 storageF = FileSystemStorage(path="static/file", allow_extensions=['.pdf', '.docx', '.txt'])
 storageI = FileSystemStorage(path="static/photo", allow_extensions=['.jpg', '.png', '.gif'])
 
+photo = Column(ImageType(storage=storageI))
 # file = Column(FileType(storage=storageF))
 
 # Эндпоинт для загрузки файла
