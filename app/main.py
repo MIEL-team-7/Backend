@@ -7,7 +7,7 @@ from app.core.logging import logger
 from app.utils.admin_panel import AdminAuth, ManagerAdmin, OfficeAdmin, CandidateAdmin, CourseAdmin, CandidateCourseAdmin, ManagerCandidateAdmin
 from app.utils.routers import register_routers
 
-app = FastAPI()
+app = FastAPI(debug=True)
 
 
 authentication_backend = AdminAuth(secret_key="...")
