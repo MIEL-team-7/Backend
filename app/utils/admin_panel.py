@@ -1,7 +1,14 @@
 from sqladmin.authentication import AuthenticationBackend
 from sqladmin import ModelView
 from starlette.requests import Request
-from app.models.models import Manager, Office, Candidate, Course, CandidateCourse, ManagerCandidate
+from app.models.models import (
+    Manager,
+    Office,
+    Candidate,
+    Course,
+    CandidateCourse,
+    ManagerCandidate,
+)
 from passlib.context import CryptContext
 
 
@@ -10,7 +17,6 @@ class AdminAuth(AuthenticationBackend):
         form = await request.form()
         print(type(form))
         username, password = form["username"], form["password"]
-
 
         request.session.update({"token": "..."})
         return True
@@ -30,21 +36,34 @@ class AdminAuth(AuthenticationBackend):
         return True
 
 
-
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
 
 class ManagerAdmin(ModelView, model=Manager):
     name = "Руководитель"
     name_plural = "Руководители"
 
-    async def on_model_change(self, data: dict, model: Manager, is_created: bool, request: Request) -> None:
-
+    async def on_model_change(
+        self, data: dict, model: Manager, is_created: bool, request: Request
+    ) -> None:
         if is_created:
             data["password"] = pwd_context.hash(data["password"])
 
     column_list = [Manager.full_name, Manager.email, Manager.office, Manager.quotas]
-    form_columns = [Manager.full_name, Manager.email, Manager.password, Manager.quotas, Manager.office, Manager.candidates]
-    column_searchable_list = [Manager.full_name, Manager.email, Manager.quotas, Manager.office]
+    form_columns = [
+        Manager.full_name,
+        Manager.email,
+        Manager.password,
+        Manager.quotas,
+        Manager.office,
+        Manager.candidates,
+    ]
+    column_searchable_list = [
+        Manager.full_name,
+        Manager.email,
+        Manager.quotas,
+        Manager.office,
+    ]
     column_sortable_list = [Manager.full_name, Manager.email, Manager.quotas]
 
     column_labels = {
@@ -53,11 +72,8 @@ class ManagerAdmin(ModelView, model=Manager):
         Manager.office: "Офис",
         Manager.quotas: "Квота",
         Manager.password: "Пароль",
-        Manager.candidates: "Кандидаты"
+        Manager.candidates: "Кандидаты",
     }
-
-
-
 
 
 class OfficeAdmin(ModelView, model=Office):
@@ -72,17 +88,51 @@ class OfficeAdmin(ModelView, model=Office):
     column_labels = {
         Office.name: "Название",
         Office.location: "Локация",
-        Office.managers: "Руководитель"
+        Office.managers: "Руководитель",
     }
+
 
 class CandidateAdmin(ModelView, model=Candidate):
     name = "Кандидат"
     name_plural = "Кандидаты"
 
-    column_list = [Candidate.id, Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects, Candidate.courses]
-    column_searchable_list = [Candidate.id, Candidate.full_name, Candidate.email, Candidate.location, Candidate.objects]
-    column_sortable_list = [Candidate.id, Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects]
-    form_columns = [Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects]
+    column_list = [
+        Candidate.id,
+        Candidate.full_name,
+        Candidate.email,
+        Candidate.location,
+        Candidate.phone,
+        Candidate.is_hired,
+        Candidate.clients,
+        Candidate.objects,
+        Candidate.courses,
+    ]
+    column_searchable_list = [
+        Candidate.id,
+        Candidate.full_name,
+        Candidate.email,
+        Candidate.location,
+        Candidate.objects,
+    ]
+    column_sortable_list = [
+        Candidate.id,
+        Candidate.full_name,
+        Candidate.email,
+        Candidate.location,
+        Candidate.phone,
+        Candidate.is_hired,
+        Candidate.clients,
+        Candidate.objects,
+    ]
+    form_columns = [
+        Candidate.full_name,
+        Candidate.email,
+        Candidate.location,
+        Candidate.phone,
+        Candidate.is_hired,
+        Candidate.clients,
+        Candidate.objects,
+    ]
 
     column_labels = {
         Candidate.full_name: "ФИО",
@@ -91,7 +141,7 @@ class CandidateAdmin(ModelView, model=Candidate):
         Candidate.phone: "Телефон",
         Candidate.is_hired: "Приглашен",
         Candidate.clients: "Клиенты",
-        Candidate.objects: "Объекты"
+        Candidate.objects: "Объекты",
     }
 
 
@@ -103,24 +153,27 @@ class CourseAdmin(ModelView, model=Course):
     column_searchable_list = [Course.id, Course.name, Course.candidates]
     form_columns = [Course.name]
 
-    column_labels = {
-        Course.name: "Название",
-        Course.candidates: "Кандидаты"
-    }
+    column_labels = {Course.name: "Название", Course.candidates: "Кандидаты"}
+
 
 class CandidateCourseAdmin(ModelView, model=CandidateCourse):
     name = "Кандидат-курс"
     name_plural = "Кандидаты-курсы"
 
-    column_list = [CandidateCourse.id, CandidateCourse.candidate, CandidateCourse.course]
+    column_list = [
+        CandidateCourse.id,
+        CandidateCourse.candidate,
+        CandidateCourse.course,
+    ]
     column_searchable_list = [CandidateCourse.id]
     column_sortable_list = [CandidateCourse.id]
     form_columns = [CandidateCourse.candidate, CandidateCourse.course]
 
     column_labels = {
         CandidateCourse.candidate: "Кандидат",
-        CandidateCourse.course: "Курс"
+        CandidateCourse.course: "Курс",
     }
+
 
 class ManagerCandidateAdmin(ModelView, model=ManagerCandidate):
     name = "История приглашений"
@@ -136,9 +189,26 @@ class ManagerCandidateAdmin(ModelView, model=ManagerCandidate):
         formatted_date = my_date.strftime("%Y-%m-%d %H:%M")
         return formatted_date
 
-    column_list =  [ManagerCandidate.id, ManagerCandidate.manager, ManagerCandidate.candidate, ManagerCandidate.created_at, ManagerCandidate.updated_at, ManagerCandidate.is_viewed]
-    column_searchable_list = [ManagerCandidate.id, ManagerCandidate.created_at, ManagerCandidate.updated_at, ManagerCandidate.is_viewed]
-    column_sortable_list = [ManagerCandidate.id, ManagerCandidate.created_at, ManagerCandidate.updated_at, ManagerCandidate.is_viewed]
+    column_list = [
+        ManagerCandidate.id,
+        ManagerCandidate.manager,
+        ManagerCandidate.candidate,
+        ManagerCandidate.created_at,
+        ManagerCandidate.updated_at,
+        ManagerCandidate.is_viewed,
+    ]
+    column_searchable_list = [
+        ManagerCandidate.id,
+        ManagerCandidate.created_at,
+        ManagerCandidate.updated_at,
+        ManagerCandidate.is_viewed,
+    ]
+    column_sortable_list = [
+        ManagerCandidate.id,
+        ManagerCandidate.created_at,
+        ManagerCandidate.updated_at,
+        ManagerCandidate.is_viewed,
+    ]
     form_columns = [ManagerCandidate.manager, ManagerCandidate.candidate]
 
     column_labels = {
@@ -146,8 +216,10 @@ class ManagerCandidateAdmin(ModelView, model=ManagerCandidate):
         ManagerCandidate.candidate: "Кандидат",
         ManagerCandidate.is_viewed: "Приглашен",
         ManagerCandidate.created_at: "Время создания",
-        ManagerCandidate.updated_at: "Время редактирования"
+        ManagerCandidate.updated_at: "Время редактирования",
     }
 
-    column_formatters = {ManagerCandidate.created_at: get_created_at,
-                         ManagerCandidate.updated_at: get_updated_at}
+    column_formatters = {
+        ManagerCandidate.created_at: get_created_at,
+        ManagerCandidate.updated_at: get_updated_at,
+    }

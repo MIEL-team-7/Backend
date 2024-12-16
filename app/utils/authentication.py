@@ -1,7 +1,9 @@
 from typing import Annotated, Dict
 from datetime import datetime, timedelta, timezone
 
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import (
+    APIKeyHeader,
+)
 from fastapi import Depends, HTTPException, status
 from passlib.context import CryptContext
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,7 +17,7 @@ from app.crud.auth_crud import read_user_by_email
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+header_scheme = APIKeyHeader(name="Authorization", auto_error=False)
 
 
 def verify_password(password: str, hashed_password: str) -> bool:
@@ -59,7 +61,7 @@ async def authenticate_user(
 
 
 async def get_current_user(
-    token: Annotated[str, Depends(oauth2_scheme)],
+    token: Annotated[str, Depends(header_scheme)],
     session: AsyncSession = Depends(get_session),
 ):
     """Получение текущего пользователя"""

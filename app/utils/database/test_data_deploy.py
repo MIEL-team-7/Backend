@@ -10,10 +10,9 @@ from app.models.models import (
     ManagerCandidate,
     CandidateCourse,
 )
-from typing import AsyncGenerator
 
 from sqlalchemy.orm import declarative_base
-from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
 from app.core.config import settings
 
@@ -97,6 +96,8 @@ async def populate_database(
                 is_hired=fake.boolean(),
                 clients=fake.random_int(min=0, max=20),
                 objects=fake.random_int(min=0, max=10),
+                date_of_birth=fake.date_between(start_date="-30y", end_date="-18y"),
+                years_of_experience=fake.random_int(min=0, max=20),
             )
             session.add(candidate)
             candidates.append(candidate)
