@@ -32,4 +32,5 @@ async def login(
     token = create_access_token(
         data={"sub": str(user.email)}, expires_delta=settings.MINUT
     )
+
     return TokenSchema(access_token=token, token_type="bearer")
