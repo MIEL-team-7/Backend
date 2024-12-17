@@ -40,7 +40,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class ManagerAdmin(ModelView, model=Manager):
-    details_template = "sqladmin/custom_details.html"
+
     name = "Руководитель"
     name_plural = "Руководители"
 
@@ -51,6 +51,9 @@ class ManagerAdmin(ModelView, model=Manager):
             data["password"] = pwd_context.hash(data["password"])
 
     column_list = [Manager.full_name, Manager.email, Manager.office, Manager.quotas]
+
+    
+
     form_columns = [
         Manager.full_name,
         Manager.email,

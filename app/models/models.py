@@ -105,7 +105,10 @@ class ManagerCandidate(BaseModel):
     note = Column(String(255))
 
     manager = relationship("Manager", back_populates="candidates")
-    candidate = relationship("Candidate", back_populates="managers")
+    candidate = relationship("Candidate", back_populates="managers", lazy="joined")
+
+    def __repr__(self) -> str:
+        return f"{self.candidate.full_name}"
 
 
 # Курсы кандидата
