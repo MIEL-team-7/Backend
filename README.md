@@ -53,6 +53,18 @@ python -m app.main
 - [OpenAPI](http://127.0.0.1:8000/openapi.json)
 
 
+## Запуск с Docker-compose
+Создайте файл `.env.docker` в корневой директории проекта и заполните его переменными окружения согласно `example.env`
+
+### Запуск:
+```bash
+docker-compose up
+```
+### Остановка:
+```bash
+docker-compose stop
+```
+
 ## Разработка
 
 Разработка проходит в ветке `dev`

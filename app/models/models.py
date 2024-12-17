@@ -3,6 +3,7 @@ from sqlalchemy import (
     Integer,
     String,
     Boolean,
+    Date,
     DateTime,
     func,
     ForeignKey,
@@ -51,7 +52,7 @@ class Manager(BaseUser):
     def __repr__(self) -> str:
         return f"{self.full_name}"
 
-      
+
 # Кандидат
 class Candidate(BaseModel):
     __tablename__ = "candidates"
@@ -60,9 +61,11 @@ class Candidate(BaseModel):
     photo = Column(String(255))  # Путь к фото
     full_name = Column(String(100))
     email = Column(String(100), unique=True)
+    date_of_birth = Column(Date)
     location = Column(String(100))
     resume = Column(String(255))  # Путь к резюме
     phone = Column(String(100), unique=True)
+    years_of_experience = Column(Integer, default=0)
     is_hired = Column(Boolean, default=False, index=True)
     clients = Column(Integer, default=0)
     objects = Column(Integer, default=0)
@@ -74,7 +77,7 @@ class Candidate(BaseModel):
     def __repr__(self) -> str:
         return f"{self.full_name}"
 
-      
+
 # Офис
 class Office(BaseModel):
     __tablename__ = "offices"
@@ -88,7 +91,7 @@ class Office(BaseModel):
     def __repr__(self) -> str:
         return f"{self.name}"
 
-      
+
 # Связь между руководителем и кандидатом
 class ManagerCandidate(BaseModel):
     __tablename__ = "manager_candidates"
@@ -96,6 +99,7 @@ class ManagerCandidate(BaseModel):
     id = Column(Integer, primary_key=True)
     done_by = Column(Integer, ForeignKey("managers.id"), index=True)
     candidate_id = Column(Integer, ForeignKey("candidates.id"), index=True)
+    is_invited = Column(Boolean, default=True, index=True)
     is_viewed = Column(Boolean, default=True, index=True)
     is_favorite = Column(Boolean, default=False, index=True)
     note = Column(String(255))
@@ -123,7 +127,7 @@ class Course(BaseModel):
     id = Column(Integer, primary_key=True)
     name = Column(String(100))
 
-    candidates = relationship("CandidateCourse", back_populates="course", lazy='joined')
+    candidates = relationship("CandidateCourse", back_populates="course", lazy="joined")
 
     def __repr__(self) -> str:
         return f"{self.name}"
