@@ -26,7 +26,7 @@ async def create_invitation(current_user_id, session, candidate_id):
     create_obj_invite = ManagerCandidate(candidate_id=candidate_id, done_by=current_user_id)
     manager.quotas = manager.quotas - 1
     candidate = await read_candidate_by_id(candidate_id, session)
-    candidate.is_hired = True
+    candidate.is_hired = True # FIXME Кандидат не становиться нанятым, он только приглашается. Кроме того, нет отслеживания ошибок(если пользователь не найден)
     session.add(create_obj_invite)
     await session.commit()
     await session.refresh(create_obj_invite)

@@ -9,7 +9,7 @@ from app.models.models import (
     CandidateCourse,
     ManagerCandidate,
 )
-from passlib.context import CryptContext
+from app.utils.authentication import get_password_hash
 
 
 class AdminAuth(AuthenticationBackend):
@@ -36,16 +36,13 @@ class AdminAuth(AuthenticationBackend):
         return True
 
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
 class ManagerAdmin(ModelView, model=Manager):
     name = "Руководитель"
     name_plural = "Руководители"
 
     async def on_model_change(self, data: dict, model: Manager, is_created: bool, request: Request) -> None:
         if is_created:
-            data["password"] = pwd_context.hash(data["password"])
+            data["password"] = get_password_hash(data["password"])
 
     column_list = [Manager.full_name, Manager.email, Manager.office, Manager.quotas]
     form_columns = [
