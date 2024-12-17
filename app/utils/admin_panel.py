@@ -40,6 +40,7 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class ManagerAdmin(ModelView, model=Manager):
+    details_template = "sqladmin/custom_details.html"
     name = "Руководитель"
     name_plural = "Руководители"
 
@@ -70,7 +71,7 @@ class ManagerAdmin(ModelView, model=Manager):
         Manager.full_name: "ФИО",
         Manager.email: "Электронная почта",
         Manager.office: "Офис",
-        Manager.quotas: "Квота",
+        Manager.quotas: "Количество квот",
         Manager.password: "Пароль",
         Manager.candidates: "Кандидаты",
     }
@@ -142,6 +143,7 @@ class CandidateAdmin(ModelView, model=Candidate):
         Candidate.is_hired: "Приглашен",
         Candidate.clients: "Клиенты",
         Candidate.objects: "Объекты",
+        Candidate.courses: "Курсы",
     }
 
 
