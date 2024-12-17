@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from requests import session
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_session
@@ -10,7 +11,7 @@ from app.crud.statistics.office_crud import (
     get_office_by_id,
 )
 
-from app.schemas.office_schema import getOffice
+from app.schemas.statistics_schema import Office
 from app.schemas.statistics_schema import CandidatesStatistics
 
 statistics_router = APIRouter(
@@ -33,7 +34,7 @@ async def get_offices_statistics(session: AsyncSession = Depends(get_session)):
     return all_offices
 
 
-@statistics_router.get("/office/{id}", response_model=getOffice)
+@statistics_router.get("/office/{id}", response_model=Office)
 async def get_offices_city_statistics(office_id: int, session: AsyncSession = Depends(get_session)):
     """Получить офисы в городе"""
     office = await get_office_by_id(office_id, session)

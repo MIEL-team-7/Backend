@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from datetime import date, timedelta
 
-from app.models.models import Candidate, Manager, Course, CandidateCourse
+from app.models.models import Candidate, Manager, Course, CandidateCourse, Office
 from app.utils.database.test_data import get_session
 
 
@@ -64,10 +64,10 @@ async def read_candidate_count(session: AsyncSession = Depends(get_session)):
     count = result.scalar_one()
     return count
 
+
 async def read_candidates_count_by_course_id(course_id: int, session: AsyncSession = Depends(get_session)):
     """Получение количества кандидатов по id курса"""
     request = select(func.count()).select_from(Candidate).join(CandidateCourse).filter(CandidateCourse.course_id == course_id)
     result = await session.execute(request)
     candidates_count = result.scalar_one()
     return candidates_count
-

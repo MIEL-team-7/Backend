@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from datetime import date, timedelta
 
-from app.models.models import Candidate, Manager, Course, CandidateCourse
+from app.models.models import Candidate, Manager, Course, CandidateCourse, Office
 from app.utils.database.test_data import get_session
 
 

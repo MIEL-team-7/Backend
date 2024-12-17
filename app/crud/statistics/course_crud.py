@@ -1,5 +1,5 @@
 from fastapi.params import Depends
-from sqlalchemy import func
+from sqlalchemy import func, column
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -21,7 +21,15 @@ async def read_courses(session: AsyncSession = Depends(get_session)):
     """Получение списка курсов с количеством кандидатов на них"""
     request = select(Course)
     result = await session.execute(request)
-    courses = result.scalars().all()
+    courses = result.scalars().unique().all()
     for course in courses:
         course.candidates_count = await read_candidates_count_by_course_id(course.id, session)
     return courses
+
+
+async def get_candidates_count_by_course_id(course_id: int, session: AsyncSession = Depends(get_session)):
+    """Получение количества кандидатов по id курса"""
+    request = select(func.count()).select_from(Candidate).join(CandidateCourse).filter(CandidateCourse.course_id == course_id)
+    result = await session.execute(request)
+    candidates_count = result.scalar_one()
+    return candidates_count
