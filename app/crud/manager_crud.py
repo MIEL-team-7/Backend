@@ -4,7 +4,7 @@ from typing import Annotated, List
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from sqlalchemy.orm import selectinload, joinedload
+from sqlalchemy.orm import selectinload, joinedload, aliased
 
 from app.core.db import get_session
 from app.models.models import (
@@ -65,6 +65,7 @@ async def read_candidates_by_manager_id(
 
 async def read_available_candidates(
     session: Annotated[AsyncSession, Depends(get_session)],
+    manager_id: int = None,
     min_age: int = None,
     max_age: int = None,
     courses: List[int] = None,
@@ -73,7 +74,15 @@ async def read_available_candidates(
     """Получение доступных кандидатов"""
     logger.debug("Получение доступных кандидатов")
 
-    request = select(Candidate).where(Candidate.is_hired == False)
+    subquery = aliased(ManagerCandidate, select(ManagerCandidate).where(ManagerCandidate.done_by == manager_id).subquery())
+
+    request = (
+        select(Candidate)
+        .join(ManagerCandidate, Candidate.id == ManagerCandidate.candidate_id)
+        .where(Candidate.is_hired == False)
+        .options(joinedload(Candidate.managers.of_type(subquery)))
+        .group_by(Candidate, ManagerCandidate.is_invited)  # Указываем конкретные столбцы
+    )
 
     # Фильтрация по возрасту
     if min_age:
@@ -100,16 +109,18 @@ async def read_available_candidates(
 
     # Сортировка
     if sort_by == sortBy.is_invited:
-        logger.debug("Сортировка по приглашенности")
+       logger.debug("Сортировка по приглашенности")
 
-        request = request.join(ManagerCandidate, Candidate.id == ManagerCandidate.candidate_id).group_by(Candidate.id, ManagerCandidate.is_invited).order_by(ManagerCandidate.is_invited == True)
+       request = request.order_by(ManagerCandidate.is_invited == True)
     elif sort_by == sortBy.is_free:
-        logger.debug("Сортировка по свободности")
+       logger.debug("Сортировка по свободности")
 
-        request = request.join(ManagerCandidate, Candidate.id == ManagerCandidate.candidate_id).group_by(Candidate.id, ManagerCandidate.is_invited).order_by(ManagerCandidate.is_invited == False)
+       request = request.order_by(ManagerCandidate.is_invited == False)
 
     result = await session.execute(request)
-    available_candidates = result.scalars().all()
+    available_candidates = result.unique().scalars().all()
+
+    
 
     return available_candidates
 
