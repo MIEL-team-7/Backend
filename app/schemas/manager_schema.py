@@ -65,3 +65,8 @@ class getCandidate(BaseModel):
 class sortBy(str, Enum):
     is_invited = "is_invited"
     is_free = "is_free"
+
+
+class inviteCandidate(BaseModel):
+
+    id: int

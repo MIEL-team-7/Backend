@@ -76,6 +76,7 @@ async def read_available_candidates(
     """Получение доступных кандидатов"""
     logger.debug("Получение доступных кандидатов")
 
+    request = select(Candidate).where(Candidate.is_hired == False)
     subquery = aliased(ManagerCandidate, select(ManagerCandidate).where(ManagerCandidate.done_by == manager_id).subquery())
 
     request = (
@@ -123,8 +124,6 @@ async def read_available_candidates(
 
     result = await session.execute(request)
     available_candidates = result.unique().scalars().all()
-
-    
 
     return available_candidates
 

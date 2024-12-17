@@ -43,9 +43,7 @@ class ManagerAdmin(ModelView, model=Manager):
     name = "Руководитель"
     name_plural = "Руководители"
 
-    async def on_model_change(
-        self, data: dict, model: Manager, is_created: bool, request: Request
-    ) -> None:
+    async def on_model_change(self, data: dict, model: Manager, is_created: bool, request: Request) -> None:
         if is_created:
             data["password"] = pwd_context.hash(data["password"])
 
@@ -72,10 +70,10 @@ class ManagerAdmin(ModelView, model=Manager):
         Manager.office: "Офис",
         Manager.quotas: "Квота",
         Manager.password: "Пароль",
-        Manager.candidates: "Кандидаты",
+        Manager.candidates: "Кандидаты"
     }
 
-
+    
 class OfficeAdmin(ModelView, model=Office):
     name = "Офис"
     name_plural = "Офисы"
@@ -84,13 +82,11 @@ class OfficeAdmin(ModelView, model=Office):
     column_searchable_list = [Office.id, Office.name, Office.location]
     column_sortable_list = [Office.id, Office.name, Office.location]
     form_columns = [Office.name, Office.location, Office.managers]
-
     column_labels = {
         Office.name: "Название",
         Office.location: "Локация",
-        Office.managers: "Руководитель",
+        Office.managers: "Руководитель"
     }
-
 
 class CandidateAdmin(ModelView, model=Candidate):
     name = "Кандидат"
@@ -152,9 +148,10 @@ class CourseAdmin(ModelView, model=Course):
     column_list = [Course.id, Course.name, Course.candidates]
     column_searchable_list = [Course.id, Course.name, Course.candidates]
     form_columns = [Course.name]
-
-    column_labels = {Course.name: "Название", Course.candidates: "Кандидаты"}
-
+    column_labels = {
+        Course.name: "Название",
+        Course.candidates: "Кандидаты"
+    }
 
 class CandidateCourseAdmin(ModelView, model=CandidateCourse):
     name = "Кандидат-курс"
@@ -174,6 +171,10 @@ class CandidateCourseAdmin(ModelView, model=CandidateCourse):
         CandidateCourse.course: "Курс",
     }
 
+    column_labels = {
+        CandidateCourse.candidate: "Кандидат",
+        CandidateCourse.course: "Курс"
+    }
 
 class ManagerCandidateAdmin(ModelView, model=ManagerCandidate):
     name = "История приглашений"

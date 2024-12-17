@@ -22,16 +22,12 @@ header_scheme = APIKeyHeader(name="Authorization", auto_error=False)
 
 def verify_password(password: str, hashed_password: str) -> bool:
     """Проверка пароля"""
-    # return pwd_context.verify(password, hashed_password) #TODO Расскомментировать после реализации хеширования пароля в админ панели
-    return (
-        password == hashed_password
-    )  # TODO Удалить после реализации хеширования пароля в админ панели
+    return pwd_context.verify(password, hashed_password) #TODO Расскомментировать после реализации хеширования пароля в админ панели
 
 
 def get_password_hash(password: str):
     """Хеширование пароля"""
-    # return pwd_context.hash(password) #TODO Расскомментировать после реализации хеширования пароля в админ панели
-    return password  # TODO Удалить после реализации хеширования пароля в админ панели
+    return pwd_context.hash(password)
 
 
 def create_access_token(data: dict, expires_delta: int) -> str:
