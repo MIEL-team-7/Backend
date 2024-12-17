@@ -58,4 +58,4 @@ async def root():
 
 if __name__ == "__main__":
     logger.info("Запуск сервера...")
-    uvicorn.run("app.main:app", host="localhost", port=8000, reload=True)
+    uvicorn.run("app.main:app", host="localhost", port=8001, reload=True)
