@@ -54,6 +54,8 @@ async def read_candidates_by_manager_id(
     request = (
         select(Candidate)
         .join(ManagerCandidate, Candidate.id == ManagerCandidate.candidate_id)
+        .options(selectinload(Candidate.courses).joinedload(CandidateCourse.course))
+        .options(selectinload(Candidate.skills).selectinload(CandidateSkill.skill))
         .where(ManagerCandidate.done_by == manager_id)
     )
 
@@ -80,6 +82,8 @@ async def read_available_candidates(
         select(Candidate)
         .join(ManagerCandidate, Candidate.id == ManagerCandidate.candidate_id)
         .where(Candidate.is_hired == False)
+        .options(selectinload(Candidate.courses).joinedload(CandidateCourse.course))
+        .options(selectinload(Candidate.skills).selectinload(CandidateSkill.skill))
         .options(joinedload(Candidate.managers.of_type(subquery)))
         .group_by(Candidate, ManagerCandidate.is_invited)  # Указываем конкретные столбцы
     )
