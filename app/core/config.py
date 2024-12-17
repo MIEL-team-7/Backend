@@ -11,6 +11,8 @@ class Settings(BaseSettings):
     DB_PASSWORD: str
     DB_NAME: str
 
+    REMOTE_POSTGRES_URL: str
+
     SECRET_KEY: str
     ALGORITHM: str
     MINUT: int
