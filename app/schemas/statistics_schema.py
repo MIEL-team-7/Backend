@@ -54,7 +54,6 @@ class Manager(BaseModel):
 class OfficeLoadStatistics(BaseModel):
     """Модель для загрузки офиса"""
     total_candidates: int
-    quotas: int
     available_slots: int
 
 
