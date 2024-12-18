@@ -37,6 +37,7 @@ class AdminAuth(AuthenticationBackend):
 
 
 class ManagerAdmin(ModelView, model=Manager):
+
     name = "Руководитель"
     name_plural = "Руководители"
 
@@ -45,6 +46,9 @@ class ManagerAdmin(ModelView, model=Manager):
             data["password"] = get_password_hash(data["password"])
 
     column_list = [Manager.full_name, Manager.email, Manager.office, Manager.quotas]
+
+    
+
     form_columns = [
         Manager.full_name,
         Manager.email,
@@ -65,7 +69,7 @@ class ManagerAdmin(ModelView, model=Manager):
         Manager.full_name: "ФИО",
         Manager.email: "Электронная почта",
         Manager.office: "Офис",
-        Manager.quotas: "Квота",
+        Manager.quotas: "Количество квот",
         Manager.password: "Пароль",
         Manager.candidates: "Кандидаты"
     }
@@ -135,6 +139,7 @@ class CandidateAdmin(ModelView, model=Candidate):
         Candidate.is_hired: "Приглашен",
         Candidate.clients: "Клиенты",
         Candidate.objects: "Объекты",
+        Candidate.courses: "Курсы",
     }
 
 

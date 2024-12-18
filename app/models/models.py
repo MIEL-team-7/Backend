@@ -105,7 +105,10 @@ class ManagerCandidate(BaseModel):
     note = Column(String(255))
 
     manager = relationship("Manager", back_populates="candidates")
-    candidate = relationship("Candidate", back_populates="managers")
+    candidate = relationship("Candidate", back_populates="managers", lazy="joined")
+
+    def __repr__(self) -> str:
+        return f"{self.candidate.full_name}"
 
 
 # Курсы кандидата
@@ -116,8 +119,11 @@ class CandidateCourse(BaseModel):
     course_id = Column(Integer, ForeignKey("courses.id"), index=True)
     candidate_id = Column(Integer, ForeignKey("candidates.id"), index=True)
 
-    candidate = relationship("Candidate", back_populates="courses")
-    course = relationship("Course", back_populates="candidates")
+    candidate = relationship("Candidate", back_populates="courses", lazy="joined")
+    course = relationship("Course", back_populates="candidates", lazy="joined")
+
+    def __repr__(self) -> str:
+        return f"{self.course.name}"
 
 
 # Курсы
