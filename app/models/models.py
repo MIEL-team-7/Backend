@@ -5,6 +5,7 @@ from sqlalchemy import (
     Integer,
     String,
     Boolean,
+    Date,
     DateTime,
     func,
     ForeignKey,
@@ -69,9 +70,11 @@ class Candidate(BaseModel):
     photo = Column(String(255))  # Путь к фото
     full_name = Column(String(100))
     email = Column(String(100), unique=True)
+    date_of_birth = Column(Date)
     location = Column(String(100))
     resume = Column(String(255))  # Путь к резюме
     phone = Column(String(100), unique=True)
+    years_of_experience = Column(Integer, default=0)
     is_hired = Column(Boolean, default=False, index=True)
     clients = Column(Integer, default=0)
     objects = Column(Integer, default=0)
@@ -109,12 +112,16 @@ class ManagerCandidate(BaseModel):
     id = Column(Integer, primary_key=True)
     done_by = Column(Integer, ForeignKey("managers.id"), index=True)
     candidate_id = Column(Integer, ForeignKey("candidates.id"), index=True)
+    is_invited = Column(Boolean, default=True, index=True)
     is_viewed = Column(Boolean, default=True, index=True)
     is_favorite = Column(Boolean, default=False, index=True)
     note = Column(String(255))
 
     manager = relationship("Manager", back_populates="candidates")
-    candidate = relationship("Candidate", back_populates="managers")
+    candidate = relationship("Candidate", back_populates="managers", lazy="joined")
+
+    def __repr__(self) -> str:
+        return f"{self.candidate.full_name}"
 
 
 # Курсы кандидата
@@ -125,8 +132,11 @@ class CandidateCourse(BaseModel):
     course_id = Column(Integer, ForeignKey("courses.id"), index=True)
     candidate_id = Column(Integer, ForeignKey("candidates.id"), index=True)
 
-    candidate = relationship("Candidate", back_populates="courses")
-    course = relationship("Course", back_populates="candidates")
+    candidate = relationship("Candidate", back_populates="courses", lazy="joined")
+    course = relationship("Course", back_populates="candidates", lazy="joined")
+
+    def __repr__(self) -> str:
+        return f"{self.course.name}"
 
 
 # Курсы

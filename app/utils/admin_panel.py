@@ -98,7 +98,16 @@ class ManagerAdmin(ModelView, model=Manager):
         Manager.photo: "Фотография"
     }
 
+    column_labels = {
+        Manager.full_name: "ФИО",
+        Manager.email: "Электронная почта",
+        Manager.office: "Офис",
+        Manager.quotas: "Количество квот",
+        Manager.password: "Пароль",
+        Manager.candidates: "Кандидаты"
+    }
 
+    
 class OfficeAdmin(ModelView, model=Office):
     name = "Офис"
     name_plural = "Офисы"
@@ -156,7 +165,8 @@ class CandidateAdmin(ModelView, model=Candidate):
         Candidate.is_hired: "Приглашен",
         Candidate.clients: "Клиенты",
         Candidate.objects: "Объекты",
-        Candidate.photo: "Фотография"
+        Candidate.photo: "Фотография",
+        Candidate.courses: "Курсы",
     }
 
 
@@ -167,7 +177,6 @@ class CourseAdmin(ModelView, model=Course):
     column_list = [Course.id, Course.name, Course.candidates]
     column_searchable_list = [Course.id, Course.name, Course.candidates]
     form_columns = [Course.name]
-
     column_labels = {
         Course.name: "Название",
         Course.candidates: "Кандидаты"
@@ -184,7 +193,7 @@ class CandidateCourseAdmin(ModelView, model=CandidateCourse):
 
     column_labels = {
         CandidateCourse.candidate: "Кандидат",
-        CandidateCourse.course: "Курс"
+        CandidateCourse.course: "Курс",
     }
 
 class ManagerCandidateAdmin(ModelView, model=ManagerCandidate):
