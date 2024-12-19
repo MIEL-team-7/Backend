@@ -13,7 +13,7 @@ from app.models.models import (
 from app.core.db import AsyncSessionFactory
 
 
-fake = Faker()
+fake = Faker("ru_RU")
 
 
 # Создаем сессию вручную

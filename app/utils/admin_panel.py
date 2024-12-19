@@ -41,40 +41,40 @@ class ManagerAdmin(ModelView, model=Manager):
     name = "Руководитель"
     name_plural = "Руководители"
 
-    form_extra_fields = {
-        'photo': form.FileUploadField('Загрузите фотографию', base_path='static/photo/',
-                                      allowed_extensions=['jpg', 'png', 'gif']),
-    }
+    # form_extra_fields = {
+    #     'photo': form.FileUploadField('Загрузите фотографию', base_path='static/photo/',
+    #                                   allowed_extensions=['jpg', 'png', 'gif']),
+    # }
 
-    form_overrides = {'photo': FileUploadField}
+    # form_overrides = {'photo': FileUploadField}
 
-    form_args = {
-        'photo': {
-            'label': 'Загрузка фотографии',
-            'base_path': 'static/photo/',  # Укажите путь для загрузки файлов
-            'relative_path': 'photo/'
-        }
-    }
+    # form_args = {
+    #     'photo': {
+    #         'label': 'Загрузка фотографии',
+    #         'base_path': 'static/photo/',  # Укажите путь для загрузки файлов
+    #         'relative_path': 'photo/'
+    #     }
+    # }
 
     async def on_model_change(self, data: dict, model: Manager, is_created: bool, request: Request) -> None:
         # Получаем данные формы
         form_data = await request.form()
-        if is_created and 'photo' in form_data:
-            photo_file = form_data['photo']
-            filename = await storageI.upload(photo_file)  # загружаем файл
-            model.photo = filename  # сохраняем имя файла в модели
-        else:
-            print("нет фотографии")
+        # if is_created and 'photo' in form_data:
+        #     photo_file = form_data['photo']
+        #     filename = await storageI.upload(photo_file)  # загружаем файл
+        #     model.photo = filename  # сохраняем имя файла в модели
+        # else:
+        #     print("нет фотографии")
 
         if is_created:
             data["password"] = pwd_context.hash(data["password"])
 
     column_list = [
-        Manager.photo,
         Manager.full_name,
         Manager.email,
         Manager.office,
-        Manager.quotas
+        Manager.quotas,
+        Manager.photo,
     ]
     form_columns = [
         Manager.full_name,
@@ -83,11 +83,10 @@ class ManagerAdmin(ModelView, model=Manager):
         Manager.quotas,
         Manager.office,
         Manager.candidates,
-        Manager.photo
+        Manager.photo,
     ]
     column_searchable_list = [Manager.photo, Manager.full_name, Manager.email, Manager.quotas, Manager.office]
     column_sortable_list = [Manager.photo, Manager.full_name, Manager.email, Manager.quotas]
-
     column_labels = {
         Manager.full_name: "ФИО",
         Manager.email: "Электронная почта",
@@ -96,15 +95,6 @@ class ManagerAdmin(ModelView, model=Manager):
         Manager.password: "Пароль",
         Manager.candidates: "Кандидаты",
         Manager.photo: "Фотография"
-    }
-
-    column_labels = {
-        Manager.full_name: "ФИО",
-        Manager.email: "Электронная почта",
-        Manager.office: "Офис",
-        Manager.quotas: "Количество квот",
-        Manager.password: "Пароль",
-        Manager.candidates: "Кандидаты"
     }
 
     
@@ -127,32 +117,33 @@ class CandidateAdmin(ModelView, model=Candidate):
     name = "Кандидат"
     name_plural = "Кандидаты"
 
-    form_extra_fields = {
-        'photo': form.FileUploadField('Загрузите фотографию', base_path='static/photo/'),
-    }
+    # form_extra_fields = {
+    #     'photo': form.FileUploadField('Загрузите фотографию', base_path='static/photo/'),
+    # }
 
-    form_overrides = {
-        'photo': FileUploadField
-    }
+    # form_overrides = {
+    #     'photo': FileUploadField
+    # }
 
-    form_args = {
-        'photo': {
-            'label': 'Загрузка фотографии',
-            'base_path': 'static/photo/',  # Укажите путь для загрузки файлов
-            'relative_path': 'static/photo/'
-        }
-    }
+    # form_args = {
+    #     'photo': {
+    #         'label': 'Загрузка фотографии',
+    #         'base_path': 'static/photo/',  # Укажите путь для загрузки файлов
+    #         'relative_path': 'static/photo/'
+    #     }
+    # }
+
     async def on_model_change(self, data: dict, model: Manager, is_created: bool, request: Request) -> None:
         # Получаем данные формы
         form_data = await request.form()
-        if is_created and 'photo' in form_data:
-            photo_file = form_data['photo']
-            filename = await storageI.upload(photo_file)  # загружаем файл
-            model.photo = filename  # сохраняем имя файла в модели
-        else:
-            print("нет фотографии")
+        # if is_created and 'photo' in form_data:
+        #     photo_file = form_data['photo']
+        #     filename = await storageI.upload(photo_file)  # загружаем файл
+        #     model.photo = filename  # сохраняем имя файла в модели
+        # else:
+        #     print("нет фотографии")
 
-    column_list = [Candidate.photo, Candidate.id, Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects, Candidate.courses]
+    column_list = [Candidate.id, Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects, Candidate.courses, Candidate.photo]
     column_searchable_list = [Candidate.photo, Candidate.id, Candidate.full_name, Candidate.email, Candidate.location, Candidate.objects]
     column_sortable_list = [Candidate.photo, Candidate.id, Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects]
     form_columns = [Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects, Candidate.photo]
@@ -210,15 +201,17 @@ class ManagerCandidateAdmin(ModelView, model=ManagerCandidate):
         formatted_date = my_date.strftime("%Y-%m-%d %H:%M")
         return formatted_date
 
-    column_list =  [ManagerCandidate.id, ManagerCandidate.manager, ManagerCandidate.candidate, ManagerCandidate.created_at, ManagerCandidate.updated_at, ManagerCandidate.is_viewed]
+    column_list =  [ManagerCandidate.id, ManagerCandidate.manager, ManagerCandidate.candidate, ManagerCandidate.created_at, ManagerCandidate.updated_at, ManagerCandidate.is_viewed, ManagerCandidate.is_favorite, ManagerCandidate.note]
     column_searchable_list = [ManagerCandidate.id, ManagerCandidate.created_at, ManagerCandidate.updated_at, ManagerCandidate.is_viewed]
     column_sortable_list = [ManagerCandidate.id, ManagerCandidate.created_at, ManagerCandidate.updated_at, ManagerCandidate.is_viewed]
-    form_columns = [ManagerCandidate.manager, ManagerCandidate.candidate]
+    form_columns = [ManagerCandidate.manager, ManagerCandidate.candidate, ManagerCandidate.is_viewed, ManagerCandidate.is_favorite, ManagerCandidate.note]
 
     column_labels = {
         ManagerCandidate.manager: "Руководитель",
         ManagerCandidate.candidate: "Кандидат",
         ManagerCandidate.is_viewed: "Приглашен",
+        ManagerCandidate.is_favorite: "Избранное",
+        ManagerCandidate.note: "Заметка",
         ManagerCandidate.created_at: "Время создания",
         ManagerCandidate.updated_at: "Время редактирования"
     }

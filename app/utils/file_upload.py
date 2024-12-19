@@ -46,7 +46,7 @@ class FileSystemStorage:
 
 # Инициализация хранилищ для файлов и фотографий
 storageF = FileSystemStorage(path="static/file", allow_extensions=['.pdf', '.docx', '.txt'])
-storageI = FileSystemStorage(path="static/photo", allow_extensions=['.jpg', '.png', '.gif'])
+storageI = FileSystemStorage(path="static/photo", allow_extensions=['.jpg', '.png', '.gif', '.jpeg'])
 
 photo = Column(ImageType(storage=storageI))
 # file = Column(FileType(storage=storageF))
