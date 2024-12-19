@@ -54,13 +54,13 @@ async def read_candidates_by_manager_id(
     request = (
         select(Candidate)
         .join(ManagerCandidate, Candidate.id == ManagerCandidate.candidate_id)
-        .options(selectinload(Candidate.courses).joinedload(CandidateCourse.course))
-        .options(selectinload(Candidate.skills).selectinload(CandidateSkill.skill))
+        .options(joinedload(Candidate.courses).joinedload(CandidateCourse.course))
+        .options(joinedload(Candidate.skills).joinedload(CandidateSkill.skill))
         .where(ManagerCandidate.done_by == manager_id)
     )
 
     result = await session.execute(request)
-    candidates = result.scalars().all()
+    candidates = result.unique().scalars().all()
 
     return candidates
 
@@ -83,8 +83,8 @@ async def read_available_candidates(
         select(Candidate)
         .join(ManagerCandidate, Candidate.id == ManagerCandidate.candidate_id)
         .where(Candidate.is_hired == False)
-        .options(selectinload(Candidate.courses).joinedload(CandidateCourse.course))
-        .options(selectinload(Candidate.skills).selectinload(CandidateSkill.skill))
+        .options(joinedload(Candidate.courses).joinedload(CandidateCourse.course))
+        .options(joinedload(Candidate.skills).joinedload(CandidateSkill.skill))
         .options(joinedload(Candidate.managers.of_type(subquery)))
         .group_by(Candidate, ManagerCandidate.is_invited)  # Указываем конкретные столбцы
     )
@@ -137,8 +137,8 @@ async def read_candidate_by_id(
     request = (
         select(Candidate)
         .where(Candidate.id == candidate_id)
-        .options(selectinload(Candidate.courses).joinedload(CandidateCourse.course))
-        .options(selectinload(Candidate.skills).selectinload(CandidateSkill.skill))
+        .options(joinedload(Candidate.courses).joinedload(CandidateCourse.course))
+        .options(joinedload(Candidate.skills).joinedload(CandidateSkill.skill))
     )
 
     result = await session.execute(request)

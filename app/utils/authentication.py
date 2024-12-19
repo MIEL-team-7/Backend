@@ -10,7 +10,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from jwt import PyJWTError
 import jwt
 
-
 from app.core.config import settings
 from app.core.db import get_session
 from app.crud.auth_crud import read_user_by_email

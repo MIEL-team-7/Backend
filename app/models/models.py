@@ -1,3 +1,5 @@
+from os.path import join
+
 from sqlalchemy import (
     Column,
     Integer,
@@ -9,7 +11,9 @@ from sqlalchemy import (
     ForeignKey,
 )
 from sqlalchemy.orm import relationship
+from fastapi_storages.integrations.sqlalchemy import FileType, ImageType
 from app.core.db import Base
+from app.utils.file_upload import storageF, storageI
 
 
 # Абстрактная модель
@@ -29,6 +33,7 @@ class BaseUser(BaseModel):
     id = Column(Integer, primary_key=True)
     email = Column(String(100), unique=True)
     password = Column(String(100))
+    photo = Column(String(255))  # Путь к фото
 
 
 # Администратор
@@ -48,6 +53,10 @@ class Manager(BaseUser):
 
     candidates = relationship("ManagerCandidate", back_populates="manager")
     office = relationship("Office", back_populates="managers")
+
+    @property
+    def photo_url(self):
+        return f"/static/photo/{self.photo}" if self.photo else None
 
     def __repr__(self) -> str:
         return f"{self.full_name}"
@@ -73,6 +82,10 @@ class Candidate(BaseModel):
     managers = relationship("ManagerCandidate", back_populates="candidate")
     courses = relationship("CandidateCourse", back_populates="candidate")
     skills = relationship("CandidateSkill", back_populates="candidate")
+
+    @property
+    def full_photo_path(self):
+        return join(storageI, self.photo)
 
     def __repr__(self) -> str:
         return f"{self.full_name}"
@@ -105,7 +118,10 @@ class ManagerCandidate(BaseModel):
     note = Column(String(255))
 
     manager = relationship("Manager", back_populates="candidates")
-    candidate = relationship("Candidate", back_populates="managers")
+    candidate = relationship("Candidate", back_populates="managers", lazy="joined")
+
+    def __repr__(self) -> str:
+        return f"{self.candidate.full_name}"
 
 
 # Курсы кандидата
@@ -116,8 +132,11 @@ class CandidateCourse(BaseModel):
     course_id = Column(Integer, ForeignKey("courses.id"), index=True)
     candidate_id = Column(Integer, ForeignKey("candidates.id"), index=True)
 
-    candidate = relationship("Candidate", back_populates="courses")
-    course = relationship("Course", back_populates="candidates")
+    candidate = relationship("Candidate", back_populates="courses", lazy="joined")
+    course = relationship("Course", back_populates="candidates", lazy="joined")
+
+    def __repr__(self) -> str:
+        return f"{self.course.name}"
 
 
 # Курсы
@@ -141,8 +160,11 @@ class CandidateSkill(BaseModel):
     skill_id = Column(Integer, ForeignKey("skills.id"), index=True)
     candidate_id = Column(Integer, ForeignKey("candidates.id"), index=True)
 
-    candidate = relationship("Candidate", back_populates="skills")
-    skill = relationship("Skill", back_populates="candidates")
+    candidate = relationship("Candidate", back_populates="skills", lazy="joined")
+    skill = relationship("Skill", back_populates="candidates", lazy="joined")
+
+    def __repr__(self) -> str:
+        return f"{self.candidate.full_name}/{self.skill.name}"
 
 
 # Навыки
@@ -153,3 +175,6 @@ class Skill(BaseModel):
     name = Column(String(100))
 
     candidates = relationship("CandidateSkill", back_populates="skill")
+
+    def __repr__(self) -> str:
+        return f"{self.name}"
