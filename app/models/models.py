@@ -160,8 +160,11 @@ class CandidateSkill(BaseModel):
     skill_id = Column(Integer, ForeignKey("skills.id"), index=True)
     candidate_id = Column(Integer, ForeignKey("candidates.id"), index=True)
 
-    candidate = relationship("Candidate", back_populates="skills")
-    skill = relationship("Skill", back_populates="candidates")
+    candidate = relationship("Candidate", back_populates="skills", lazy="joined")
+    skill = relationship("Skill", back_populates="candidates", lazy="joined")
+
+    def __repr__(self) -> str:
+        return f"{self.candidate.full_name}/{self.skill.name}"
 
 
 # Навыки
@@ -172,3 +175,6 @@ class Skill(BaseModel):
     name = Column(String(100))
 
     candidates = relationship("CandidateSkill", back_populates="skill")
+
+    def __repr__(self) -> str:
+        return f"{self.name}"

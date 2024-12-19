@@ -6,7 +6,7 @@ from passlib.context import CryptContext
 from sqladmin import ModelView
 from sqladmin.authentication import AuthenticationBackend
 
-from app.models.models import Manager, Office, Candidate, Course, CandidateCourse, ManagerCandidate
+from app.models.models import Manager, Office, Candidate, Course, CandidateCourse, ManagerCandidate, CandidateSkill, Skill
 from app.utils.file_upload import storageI, photo
 
 
@@ -85,16 +85,20 @@ class ManagerAdmin(ModelView, model=Manager):
         Manager.candidates,
         Manager.photo,
     ]
+    column_details_exclude_list = ["office_id"]
     column_searchable_list = [Manager.photo, Manager.full_name, Manager.email, Manager.quotas, Manager.office]
     column_sortable_list = [Manager.photo, Manager.full_name, Manager.email, Manager.quotas]
     column_labels = {
+        Manager.id: "ID",
         Manager.full_name: "ФИО",
         Manager.email: "Электронная почта",
         Manager.office: "Офис",
         Manager.quotas: "Квота",
         Manager.password: "Пароль",
         Manager.candidates: "Кандидаты",
-        Manager.photo: "Фотография"
+        Manager.photo: "Фотография",
+        Manager.created_at: "Время создания",
+        Manager.updated_at: "Время последнего изменения"
     }
 
     
@@ -102,10 +106,10 @@ class OfficeAdmin(ModelView, model=Office):
     name = "Офис"
     name_plural = "Офисы"
 
-    column_list = [Office.id, Office.name, Office.location, Office.managers]
-    column_searchable_list = [Office.id, Office.name, Office.location]
-    column_sortable_list = [Office.id, Office.name, Office.location]
-    form_columns = [Office.name, Office.location, Office.managers]
+    column_list =[Office.name, Office.location, Office.managers]
+    column_searchable_list =[Office.name, Office.location]
+    column_sortable_list =[Office.name, Office.location]
+    form_columns = [Office.location, Office.managers]
 
     column_labels = {
         Office.name: "Название",
@@ -143,21 +147,23 @@ class CandidateAdmin(ModelView, model=Candidate):
         # else:
         #     print("нет фотографии")
 
-    column_list = [Candidate.id, Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects, Candidate.courses, Candidate.photo]
-    column_searchable_list = [Candidate.photo, Candidate.id, Candidate.full_name, Candidate.email, Candidate.location, Candidate.objects]
-    column_sortable_list = [Candidate.photo, Candidate.id, Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects]
-    form_columns = [Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects, Candidate.photo]
+    column_list = [Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects, Candidate.courses, Candidate.photo, Candidate.skills]
+    column_searchable_list = [Candidate.photo, Candidate.full_name, Candidate.email, Candidate.location, Candidate.objects]
+    column_sortable_list = [Candidate.photo, Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects]
+    form_columns = [Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects, Candidate.photo, Candidate.courses, Candidate.skills]
+    column_details_exclude_list = ["id"]
 
     column_labels = {
         Candidate.full_name: "ФИО",
         Candidate.email: "Электронная почта",
         Candidate.location: "Адрес",
         Candidate.phone: "Телефон",
-        Candidate.is_hired: "Приглашен",
+        Candidate.is_hired: "Нанят",
         Candidate.clients: "Клиенты",
         Candidate.objects: "Объекты",
         Candidate.photo: "Фотография",
         Candidate.courses: "Курсы",
+        Candidate.skills: "Навыки",
     }
 
 
@@ -218,3 +224,31 @@ class ManagerCandidateAdmin(ModelView, model=ManagerCandidate):
 
     column_formatters = {ManagerCandidate.created_at: get_created_at,
                          ManagerCandidate.updated_at: get_updated_at}
+
+
+class CandidateSkillAdmin(ModelView, model=CandidateSkill):
+    name = "Кандидат-навык"
+    name_plural = "Кандидаты-навыки"
+
+    column_list = [CandidateSkill.candidate, CandidateSkill.skill]
+    column_searchable_list = [CandidateSkill.id]
+    column_sortable_list = [CandidateSkill.id]
+    form_columns = [CandidateSkill.candidate, CandidateSkill.skill]
+
+    column_labels = {
+        CandidateSkill.candidate: "Кандидат",
+        CandidateSkill.skill: "Навык",
+    }
+
+
+class SkillAdmin(ModelView, model=Skill):
+    name = "Навык"
+    name_plural = "Навыки"
+
+    column_list = [Skill.name, Skill.candidates]
+    column_searchable_list = [Skill.name, Skill.candidates]
+    form_columns = [Skill.name]
+    column_labels = {
+        Skill.name: "Название",
+        Skill.candidates: "Кандидаты"
+    }

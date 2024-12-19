@@ -16,6 +16,8 @@ from app.utils.admin_panel import (
     CourseAdmin,
     CandidateCourseAdmin,
     ManagerCandidateAdmin,
+    CandidateSkillAdmin,
+    SkillAdmin,
 )
 from app.utils.routers import register_routers
 
@@ -49,6 +51,8 @@ admin.add_view(CandidateAdmin)
 admin.add_view(CourseAdmin)
 admin.add_view(CandidateCourseAdmin)
 admin.add_view(ManagerCandidateAdmin)
+admin.add_view(CandidateSkillAdmin)
+admin.add_view(SkillAdmin)
 
 # Регистрируем роутеры
 register_routers(app)
