@@ -44,14 +44,13 @@ class OfficeLoadStatistics(BaseModel):
     name: str
     location: str
     total_candidates: int
+    hired_candidates: int
     quotas: int
-    available_slots: int
 
 
 class OfficeStatistics(BaseModel):
     """Модель для информации об офисе"""
     total: int
-    quotas: int
     office_load: List[OfficeLoadStatistics]
 
 
@@ -59,7 +58,7 @@ class ManagerStatistics(BaseModel):
     """Модель для информации о менеджере"""
     full_name: str
     quotas: int
-    office_id: OfficeStatistics
+    office: OfficeStatistics
 
 
 class StatisticsResponse(BaseModel):

@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.params import Depends
 from requests import session
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -6,10 +7,13 @@ from app.core.db import get_session
 from app.crud.office_crud import get_offices, get_office_by_id
 from app.crud.statistics.candidate_crud import read_candidates
 from app.crud.statistics.course_crud import read_courses_count
-from app.crud.statistics.office_crud import read_office_load, read_all_offices_load
+from app.crud.statistics.office_crud import read_office_load, read_all_offices_load, read_office_by_id, \
+    read_all_offices_count
 
-from app.schemas.statistics_schema import OfficeStatistics, InvitationStatistics, ManagerStatistics
+from app.schemas.statistics_schema import OfficeStatistics, InvitationStatistics, ManagerStatistics, \
+    OfficeLoadStatistics
 from app.schemas.statistics_schema import CandidatesStatistics
+from app.utils.database.test_data import get_session
 
 statistics_router = APIRouter(
     prefix="/statistics",
@@ -30,11 +34,21 @@ async def get_candidates_statistics(session: AsyncSession = Depends(get_session)
     return CandidatesStatistics(**candidate_statistics)
 
 
-@statistics_router.get("/offices")
+@statistics_router.get("/offices", response_model=OfficeStatistics)
 async def get_offices_statistics(session: AsyncSession = Depends(get_session)):
     """Получить общую статистику по офисам"""
+    all_offices_count = await read_all_offices_count(session)
     all_offices = await read_all_offices_load(session)
-    return all_offices
+    return {
+        'total': all_offices_count,
+        'office_load': all_offices,
+    }
+
+@statistics_router.get("/office/{office_id}", response_model=OfficeLoadStatistics)
+async def get_office_stat_by_id(office_id: int, session: AsyncSession = Depends(get_session)):
+    """Получить статистику офиса по id"""
+    office_stat = await read_office_load(office_id, session)
+    return OfficeLoadStatistics(**office_stat)
 
 
 @statistics_router.get("/courses")

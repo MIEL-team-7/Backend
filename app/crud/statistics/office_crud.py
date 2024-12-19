@@ -13,7 +13,7 @@ from app.models.models import Candidate, Manager, Office
 from app.utils.database.test_data import get_session
 
 
-async def read_offices_count(session: AsyncSession = Depends(get_session)):
+async def read_all_offices_count(session: AsyncSession = Depends(get_session)):
     """Получение количества всех офисов"""
     request = select(func.count()).select_from(Office)
     result = await session.execute(request)
@@ -31,14 +31,13 @@ async def read_office_load(office_id: int, session: AsyncSession = Depends(get_s
 
     total_candidates = await read_candidate_count(session)
     quotas = await read_quotas_by_manager_id(office_id, session)
-    available_slots = quotas - total_candidates
+    hired_candidates = ''
 
     return {
         "name": office.name,
         "location": office.location,
-        "total": total_candidates,
+        "total_candidates": total_candidates,
         "quotas": quotas,
-        "available_slots": available_slots,
     }
 
 
@@ -63,5 +62,13 @@ async def read_office_by_id(office_id: int, session: AsyncSession = Depends(get_
     """Получение офиса по id"""
     request = select(Office)
     result = await session.execute(request)
-    office = result.scalars().all()
+    office = result.scalars().first()
+
+    if office:
+        return {
+            'id': office.id,
+            'name': office.name,
+            'location': office.location,
+        }
+
     return office
