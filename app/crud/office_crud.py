@@ -16,7 +16,7 @@ async def get_offices(session: AsyncSession = Depends(get_session)):
 
 
 async def get_office_by_id(id: int, session: AsyncSession = Depends(get_session)):
-    """Получение офисов в городе"""
+    """Получение офиса по id"""
     office = await session.get(Office, id)
     if office:
         return office

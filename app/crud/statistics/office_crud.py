@@ -4,43 +4,64 @@ from fastapi.params import Depends
 from sqlalchemy import func
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from urllib3 import request
 
+from app.crud.office_crud import get_office_by_id
 from app.crud.statistics.candidate_crud import read_candidate_count
+from app.crud.statistics.manager_crud import read_quotas_by_manager_id
 from app.models.models import Candidate, Manager, Office
 from app.utils.database.test_data import get_session
 
 
-async def get_offices(session: AsyncSession = Depends(get_session)):
-    """Получение всех офисов"""
-    request = select(Office)
+async def read_offices_count(session: AsyncSession = Depends(get_session)):
+    """Получение количества всех офисов"""
+    request = select(func.count()).select_from(Office)
     result = await session.execute(request)
-    all_offices = result.scalars().all()
+    all_offices = result.scalar_one()
     return all_offices
 
 
-async def get_office_by_id(id: int, session: AsyncSession = Depends(get_session)):
-    """Получение офисов в городе"""
-    office = await session.get(Office, id)
-    if office:
-        return office
-    return None
+async def read_office_load(office_id: int, session: AsyncSession = Depends(get_session)):
+    """Получение загруженности офиса по id офиса"""
+    request = await session.execute(select(Office).where(Office.id == office_id))
+    office = request.scalars().first()
 
+    if not office:
+        return None
 
-async def get_quotas_by_manager_id(manager_id: int, session: AsyncSession = Depends(get_session)):
-    request = select(Manager.quotas).filter(Manager.id == manager_id)
-    result = await session.execute(request)
-    quotas = result.scalar_one()
-    if quotas:
-        return quotas
-    return None
-
-
-async def get_office_load(manager_id: int, session: AsyncSession = Depends(get_session)):
-    total_candidates = read_candidate_count(),
-    quotas = get_quotas_by_manager_id(manager_id, session),
+    total_candidates = await read_candidate_count(session)
+    quotas = await read_quotas_by_manager_id(office_id, session)
     available_slots = quotas - total_candidates
+
     return {
+        "name": office.name,
+        "location": office.location,
         "total": total_candidates,
         "quotas": quotas,
         "available_slots": available_slots,
     }
+
+
+async def read_all_offices_load(session: AsyncSession = Depends(get_session)):
+    """Получение загруженности всех офисов"""
+    # Извлечение всех идентификаторов офисов
+    result = await session.execute(select(Office.id))
+    office_ids = result.scalars().all()
+
+    # Список для хранения статистики по всем офисам
+    offices_stats = []
+
+    # Обход каждого офиса и получение его статистики
+    for office_id in office_ids:
+        office_load = await read_office_load(office_id, session)
+        offices_stats.append(office_load)
+
+    return offices_stats
+
+
+async def read_office_by_id(office_id: int, session: AsyncSession = Depends(get_session)):
+    """Получение офиса по id"""
+    request = select(Office)
+    result = await session.execute(request)
+    office = result.scalars().all()
+    return office

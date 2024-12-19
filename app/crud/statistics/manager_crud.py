@@ -10,6 +10,7 @@ from app.utils.database.test_data import get_session
 
 
 async def read_quotas_by_manager_id(manager_id: int, session: AsyncSession = Depends(get_session)):
+    """Получение числа квот руководителя"""
     request = select(Manager.quotas).filter(Manager.id == manager_id)
     result = await session.execute(request)
     quotas = result.scalar_one()
@@ -18,9 +19,9 @@ async def read_quotas_by_manager_id(manager_id: int, session: AsyncSession = Dep
     return None
 
 
-async def read_manager_by_id(id: int, session: AsyncSession = Depends(get_session)):
-    """Поиск руководителя по id"""
-    manager = await session.get(Manager, id)
+async def read_managers_count(id: int, session: AsyncSession = Depends(get_session)):
+    """Получение числа руководителей"""
+    manager = await session.execute(select(func.count()).select_from(Manager))
     if manager:
         return manager
     return None

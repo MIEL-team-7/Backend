@@ -15,6 +15,8 @@ class CandidatesStatistics(BaseModel):
     last_day: int
     last_week: int
     last_month: int
+    favorite: int
+    invited: int
     hired: int
 
 
@@ -37,27 +39,30 @@ class ActivityStatistics(BaseModel):
     invitation_trend: List[InvitationStatistics]
 
 
-class Office(BaseModel):
-    """Модель для информации об офисе"""
-    id: int
+class OfficeLoadStatistics(BaseModel):
+    """Модель для загрузки офиса"""
     name: str
     location: str
+    total_candidates: int
+    quotas: int
+    available_slots: int
 
 
-class Manager(BaseModel):
+class OfficeStatistics(BaseModel):
+    """Модель для информации об офисе"""
+    total: int
+    quotas: int
+    office_load: List[OfficeLoadStatistics]
+
+
+class ManagerStatistics(BaseModel):
     """Модель для информации о менеджере"""
     full_name: str
     quotas: int
-    office_id: Office
-
-
-class OfficeLoadStatistics(BaseModel):
-    """Модель для загрузки офиса"""
-    total_candidates: int
-    available_slots: int
+    office_id: OfficeStatistics
 
 
 class StatisticsResponse(BaseModel):
     """Модель для основного ответа"""
-    manager: Manager
+    manager: ManagerStatistics
     statistics: Dict[str, dict]
