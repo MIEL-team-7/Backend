@@ -150,7 +150,7 @@ class CandidateAdmin(ModelView, model=Candidate):
     column_list = [Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects, Candidate.courses, Candidate.photo, Candidate.skills]
     column_searchable_list = [Candidate.photo, Candidate.full_name, Candidate.email, Candidate.location, Candidate.objects]
     column_sortable_list = [Candidate.photo, Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects]
-    form_columns = [Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects, Candidate.photo, Candidate.courses, Candidate.skills]
+    form_columns = [Candidate.full_name, Candidate.email, Candidate.location, Candidate.phone, Candidate.is_hired, Candidate.clients, Candidate.objects, Candidate.photo]
     column_details_exclude_list = ["id"]
 
     column_labels = {
