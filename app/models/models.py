@@ -79,9 +79,9 @@ class Candidate(BaseModel):
     clients = Column(Integer, default=0)
     objects = Column(Integer, default=0)
 
-    managers = relationship("ManagerCandidate", back_populates="candidate", lazy="joined")
-    courses = relationship("CandidateCourse", back_populates="candidate", lazy="joined")
-    skills = relationship("CandidateSkill", back_populates="candidate", lazy="joined")
+    managers = relationship("ManagerCandidate", back_populates="candidate")
+    courses = relationship("CandidateCourse", back_populates="candidate")
+    skills = relationship("CandidateSkill", back_populates="candidate")
 
     @property
     def full_photo_path(self):
