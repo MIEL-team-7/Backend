@@ -1,7 +1,9 @@
 from sqladmin.authentication import AuthenticationBackend
 from sqladmin import ModelView
 from starlette.requests import Request
-from app.models.models import Manager, Office, Candidate, Course, CandidateCourse, ManagerCandidate
+from app.models.models import (Manager, Office, Candidate,
+                               Course, CandidateCourse, ManagerCandidate,
+                               )
 from passlib.context import CryptContext
 
 
@@ -136,18 +138,23 @@ class ManagerCandidateAdmin(ModelView, model=ManagerCandidate):
         formatted_date = my_date.strftime("%Y-%m-%d %H:%M")
         return formatted_date
 
-    column_list =  [ManagerCandidate.id, ManagerCandidate.manager, ManagerCandidate.candidate, ManagerCandidate.created_at, ManagerCandidate.updated_at, ManagerCandidate.is_viewed]
-    column_searchable_list = [ManagerCandidate.id, ManagerCandidate.created_at, ManagerCandidate.updated_at, ManagerCandidate.is_viewed]
-    column_sortable_list = [ManagerCandidate.id, ManagerCandidate.created_at, ManagerCandidate.updated_at, ManagerCandidate.is_viewed]
-    form_columns = [ManagerCandidate.manager, ManagerCandidate.candidate]
+    column_list =  [ManagerCandidate.id, ManagerCandidate.manager, ManagerCandidate.candidate, ManagerCandidate.created_at, ManagerCandidate.updated_at, ManagerCandidate.is_viewed, ManagerCandidate.is_invited, ManagerCandidate.is_favorite, ManagerCandidate.note]
+    column_searchable_list = [ManagerCandidate.id, ManagerCandidate.created_at, ManagerCandidate.updated_at, ManagerCandidate.is_viewed, ManagerCandidate.is_invited, ManagerCandidate.is_favorite, ManagerCandidate.note]
+    column_sortable_list = [ManagerCandidate.id, ManagerCandidate.created_at, ManagerCandidate.updated_at, ManagerCandidate.is_viewed, ManagerCandidate.is_invited, ManagerCandidate.is_favorite, ManagerCandidate.note]
+    form_columns = [ManagerCandidate.manager, ManagerCandidate.candidate, ManagerCandidate.note, ManagerCandidate.is_viewed, ManagerCandidate.is_invited, ManagerCandidate.is_favorite]
 
     column_labels = {
         ManagerCandidate.manager: "Руководитель",
         ManagerCandidate.candidate: "Кандидат",
-        ManagerCandidate.is_viewed: "Приглашен",
+        ManagerCandidate.is_viewed: "Обработан",
         ManagerCandidate.created_at: "Время создания",
-        ManagerCandidate.updated_at: "Время редактирования"
+        ManagerCandidate.updated_at: "Время редактирования",
+        ManagerCandidate.is_invited: "Приглашен",
+        ManagerCandidate.is_favorite: "Избран",
+        ManagerCandidate.note: "Заметки",
     }
 
     column_formatters = {ManagerCandidate.created_at: get_created_at,
                          ManagerCandidate.updated_at: get_updated_at}
+
+
