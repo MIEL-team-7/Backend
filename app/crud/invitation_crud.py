@@ -1,6 +1,6 @@
 from app.crud.manager_crud import read_manager_by_id
 from app.models.models import (
-      ManagerCandidate,
+    ManagerCandidate,
 )
 from app.crud.favorite_crud import check_obj_exists, get_obj_manager_candidate
 from fastapi import HTTPException
@@ -14,13 +14,15 @@ async def invite_candidate(current_user_id, session, candidate_id):
     else:
         raise HTTPException(
             status_code=status.HTTP_402_PAYMENT_REQUIRED,
-            detail="Not enough quotas to send invites"
-            )
+            detail="Not enough quotas to send invites",
+        )
+
 
 async def check_quotas(current_user_id, session):
     manager = await read_manager_by_id(current_user_id, session)
     if manager.quotas > 0:
         return True
+
 
 async def create_invitation(current_user_id, session, candidate_id):
     manager = await read_manager_by_id(current_user_id, session)
@@ -46,4 +48,3 @@ async def create_invitation(current_user_id, session, candidate_id):
             await session.refresh(manager)
             await session.refresh(obj)
             return obj
-

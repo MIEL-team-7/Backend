@@ -59,7 +59,12 @@ async def get_available_candidates(
     logger.debug("Запуск роутера manager/get_available_candidates/")
 
     candidates = await read_available_candidates(
-        session, min_age=min_age, max_age=max_age, courses=courses, sort_by=sort_by
+        session,
+        manager_id=current_user_id,
+        min_age=min_age,
+        max_age=max_age,
+        courses=courses,
+        sort_by=sort_by,
     )
     return candidates
 

@@ -10,10 +10,27 @@ from app.models.models import (
     ManagerCandidate,
     CandidateCourse,
 )
-from app.core.db import AsyncSessionFactory
 
+from sqlalchemy.orm import declarative_base
+from sqlalchemy.ext.asyncio import create_async_engine
+from sqlalchemy.orm import sessionmaker
+from app.core.config import settings
 
 fake = Faker("ru_RU")
+
+
+db_url = settings.REMOTE_POSTGRES_URL
+
+engine = create_async_engine(db_url)
+
+Base = declarative_base()
+
+
+AsyncSessionFactory = sessionmaker(
+    bind=engine,
+    class_=AsyncSession,
+    expire_on_commit=False,
+)
 
 
 # Создаем сессию вручную
@@ -25,8 +42,8 @@ async def get_session() -> AsyncSession:
 async def populate_database(
     num_offices: int = 5,
     num_admins: int = 3,
-    num_managers: int = 10,
-    num_candidates: int = 50,
+    num_managers: int = 5,
+    num_candidates: int = 20,
     num_courses: int = 10,
     max_candidates_per_manager: int = 3,
     max_courses_per_candidate: int = 3,

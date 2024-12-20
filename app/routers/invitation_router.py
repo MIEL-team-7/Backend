@@ -1,11 +1,10 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_session
 from app.crud.invitation_crud import invite_candidate
-
 from app.crud.favorite_crud import (
     like_candidate, dislike_candidate
 )
@@ -13,6 +12,7 @@ from app.crud.notes_crud import put_note_from_manager, delete_note_from_manager
 
 from app.utils.authentication import get_current_user
 from app.schemas.manager_schema import inviteCandidate, NotesManager
+
 
 candidate_router = APIRouter(
     prefix="/candidate",
@@ -24,7 +24,7 @@ candidate_router = APIRouter(
 async def invite_candidate_of_manager(
     current_user_id: Annotated[int, Depends(get_current_user)],
     session: Annotated[AsyncSession, Depends(get_session)],
-    candidate: inviteCandidate
+    candidate: inviteCandidate,
 ):
     invitation = await invite_candidate(current_user_id, session, candidate)
     return invitation

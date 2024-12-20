@@ -10,7 +10,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from jwt import PyJWTError
 import jwt
 
-
 from app.core.config import settings
 from app.core.db import get_session
 from app.crud.auth_crud import read_user_by_email
@@ -22,12 +21,14 @@ header_scheme = APIKeyHeader(name="Authorization", auto_error=False)
 
 def verify_password(password: str, hashed_password: str) -> bool:
     """Проверка пароля"""
-    return pwd_context.verify(password, hashed_password) #TODO Расскомментировать после реализации хеширования пароля в админ панели
+    # return pwd_context.verify(password, hashed_password) TODO Расскомментировать после реализации хеширования пароля в админ панели
+    return password == hashed_password
 
 
 def get_password_hash(password: str):
     """Хеширование пароля"""
-    return pwd_context.hash(password)
+    # return pwd_context.hash(password) TODO Расскомментировать после реализации хеширования пароля в админ панели
+    return password
 
 
 def create_access_token(data: dict, expires_delta: int) -> str:
