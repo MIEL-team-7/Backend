@@ -1,7 +1,6 @@
 from calendar import month
 from idlelib.rpc import request_queue
 
-from Tools.demo.sortvisu import distinct
 from fastapi.params import Depends
 from sqlalchemy import func
 from sqlalchemy.future import select

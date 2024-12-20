@@ -29,8 +29,8 @@ async def read_office_load(office_id: int, session: AsyncSession = Depends(get_s
     if not office:
         return None
 
-    total_candidates = await read_candidate_count(session)
-    quotas = await read_quotas_by_manager_id(office_id, session)
+    total_candidates = await read_candidate_count(session) # FIXME: функция возвращает общее количество кандидатов. Этот пункт не нужен, так как офисы не имеют квоты. Их имеют руководители.
+    quotas = await read_quotas_by_manager_id(office_id, session) # FIXME: функция запрашивает manager_id(id руководителя), а не office_id(id офиса)
     available_slots = quotas - total_candidates
 
     return {

@@ -22,5 +22,5 @@ async def read_courses_count(session: AsyncSession = Depends(get_session)):
     """Получение количества курсов"""
     request = select(Course.id)
     result = await session.execute(request)
-    courses_count = result.scalar_one()
+    courses_count = result.scalars().all()
     return courses_count
