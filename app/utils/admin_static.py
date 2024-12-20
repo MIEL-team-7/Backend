@@ -1,18 +1,7 @@
-import os
-from typing import BinaryIO
 
-from fastapi import UploadFile
-from sqladmin import Admin, ModelView
-from sqlalchemy import Column, Integer
-from sqlalchemy.orm import Session
-from fastapi_storages import FileSystemStorage
-from fastapi_storages.integrations.sqlalchemy import FileType, ImageType
 
-from app.core.db import engine, Base, AsyncSessionFactory
-from app.main import app
-from app.models.models import BaseUser
 
-'''
+"""
 
 storageF = FileSystemStorage(path="/static/file")
 storageI = FileSystemStorage(path="/static/image")
@@ -47,4 +36,4 @@ def create_upload_file(file: UploadFile):
         session.commit()
         return {"filename": user.file.name}
 
-'''
+"""

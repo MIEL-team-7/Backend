@@ -1,17 +1,14 @@
-from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException, Form, UploadFile
+from fastapi import APIRouter
 
-from app.core.config import settings
-from app.core.logging import logger
 
 
 photo_router = APIRouter(prefix="/upload", tags=["Работа с изображениями"])
 
-#@photo_router.post("/upload/")
-#async def upload(
+# @photo_router.post("/upload/")
+# async def upload(
 #    photo: UploadFile = File(...),
-#) -> Annotated:
+# ) -> Annotated:
 #    logger.debug("Запуск роутера загрузка фото" )
 #
 #

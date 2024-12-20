@@ -3,13 +3,14 @@ from sqlalchemy import func
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from datetime import date, timedelta
 
-from app.models.models import Candidate, Manager, Course, CandidateCourse, Office
+from app.models.models import Manager
 from app.utils.database.test_data import get_session
 
 
-async def read_quotas_by_manager_id(manager_id: int, session: AsyncSession = Depends(get_session)):
+async def read_quotas_by_manager_id(
+    manager_id: int, session: AsyncSession = Depends(get_session)
+):
     """Получение числа квот руководителя"""
     request = select(Manager.quotas).filter(Manager.id == manager_id)
     result = await session.execute(request)

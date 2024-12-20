@@ -11,9 +11,8 @@ from sqlalchemy import (
     ForeignKey,
 )
 from sqlalchemy.orm import relationship
-from fastapi_storages.integrations.sqlalchemy import FileType, ImageType
 from app.core.db import Base
-from app.utils.file_upload import storageF, storageI
+from app.utils.file_upload import storageI
 
 
 # Абстрактная модель

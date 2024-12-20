@@ -1,26 +1,21 @@
-from fastapi import APIRouter, Depends, HTTPException
-from requests import session
+from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.db import get_session
-from app.crud.office_crud import get_offices, get_office_by_id
 from app.crud.statistics.candidate_crud import read_candidates
 from app.crud.statistics.course_crud import read_courses_count
-from app.crud.statistics.office_crud import read_office_load, read_all_offices_load
 
-from app.schemas.statistics_schema import OfficeStatistics, InvitationStatistics, ManagerStatistics
 from app.schemas.statistics_schema import CandidatesStatistics
 
-statistics_router = APIRouter(
-    prefix="/statistics",
-    tags=["Работа со статистикой"]
-)
+statistics_router = APIRouter(prefix="/statistics", tags=["Работа со статистикой"])
 
 
 @statistics_router.get("/managers")
 async def get_managers_statistics(session: AsyncSession = Depends(get_session)):
     """Получить общую статистику по приглашенным кандидатам"""
-    return {"details": "Статистика по менеджерам. Данный эндпоинт находится в разработке."}
+    return {
+        "details": "Статистика по менеджерам. Данный эндпоинт находится в разработке."
+    }
 
 
 @statistics_router.get("/candidates", response_model=CandidatesStatistics)

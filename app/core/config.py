@@ -3,7 +3,7 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     class Config:
-        env_file = '.env'
+        env_file = ".env"
 
     DB_HOST: str
     DB_PORT: str
