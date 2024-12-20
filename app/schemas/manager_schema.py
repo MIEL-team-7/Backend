@@ -68,4 +68,10 @@ class sortBy(str, Enum):
 
 
 class inviteCandidate(BaseModel):
+
     id: int
+
+class NotesManager(BaseModel):
+
+    id: int
+    note: str

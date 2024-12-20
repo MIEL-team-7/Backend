@@ -1,4 +1,7 @@
 from starlette.requests import Request
+from app.models.models import (Manager, Office, Candidate,
+                               Course, CandidateCourse, ManagerCandidate,
+                               )
 from passlib.context import CryptContext
 from sqladmin import ModelView
 from sqladmin.authentication import AuthenticationBackend
