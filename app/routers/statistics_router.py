@@ -7,8 +7,8 @@ from app.core.db import get_session
 from app.crud.office_crud import get_offices, get_office_by_id
 from app.crud.statistics.candidate_crud import read_candidates
 from app.crud.statistics.course_crud import read_courses_count
-from app.crud.statistics.office_crud import read_office_load, read_all_offices_load, read_office_by_id, \
-    read_all_offices_count
+from app.crud.statistics.manager_crud import read_managers_count, read_manager_statistics
+from app.crud.statistics.office_crud import read_office_load, read_all_offices_load, read_all_offices_count
 
 from app.schemas.statistics_schema import OfficeStatistics, InvitationStatistics, ManagerStatistics, \
     OfficeLoadStatistics
@@ -21,10 +21,11 @@ statistics_router = APIRouter(
 )
 
 
-@statistics_router.get("/managers", response_model=ManagerStatistics)
-async def get_managers_statistics(session: AsyncSession = Depends(get_session)):
+@statistics_router.get("/manager/{manager_id}", response_model=ManagerStatistics)
+async def get_managers_statistics(manager_id: int, session: AsyncSession = Depends(get_session)):
     """Получить общую статистику по приглашенным кандидатам"""
-    pass
+    manager_stat = await read_manager_statistics(manager_id, session)
+    return manager_stat
 
 
 @statistics_router.get("/candidates", response_model=CandidatesStatistics)

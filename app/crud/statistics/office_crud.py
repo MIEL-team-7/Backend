@@ -60,9 +60,9 @@ async def read_all_offices_load(session: AsyncSession = Depends(get_session)):
     return offices_stats
 
 
-async def read_office_by_id(office_id: int, session: AsyncSession = Depends(get_session)):
+async def read_office_by_manager_id(manager_id: int, session: AsyncSession = Depends(get_session)):
     """Получение офиса по id"""
-    request = select(Office)
+    request = select(Office).join(Office, Manager.office_id == manager_id)
     result = await session.execute(request)
     office = result.scalars().first()
 
