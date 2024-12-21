@@ -44,8 +44,8 @@ class OfficeLoadStatistics(BaseModel):
     name: str
     location: str
     total_candidates: int
+    invited_candidates: int
     hired_candidates: int
-    quotas: int
 
 
 class OfficeStatistics(BaseModel):

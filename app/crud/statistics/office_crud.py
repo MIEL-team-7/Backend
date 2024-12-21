@@ -7,7 +7,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from urllib3 import request
 
 from app.crud.office_crud import get_office_by_id
-from app.crud.statistics.candidate_crud import read_candidate_count
+from app.crud.statistics.candidate_crud import read_candidate_count, read_available_candidates_count, \
+    read_invited_candidates
 from app.crud.statistics.manager_crud import read_quotas_by_manager_id
 from app.models.models import Candidate, Manager, Office
 from app.utils.database.test_data import get_session
@@ -30,14 +31,15 @@ async def read_office_load(office_id: int, session: AsyncSession = Depends(get_s
         return None
 
     total_candidates = await read_candidate_count(session)
-    quotas = await read_quotas_by_manager_id(office_id, session)
-    hired_candidates = ''
+    invited_candidates = await read_invited_candidates(session)
+    hired_candidates = await read_available_candidates_count(True, session)
 
     return {
         "name": office.name,
         "location": office.location,
         "total_candidates": total_candidates,
-        "quotas": quotas,
+        "invited_candidates": invited_candidates,
+        "hired_candidates": hired_candidates,
     }
 
 
