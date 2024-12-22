@@ -12,10 +12,7 @@ from app.schemas.statistics_schema import OfficeStatistics, ManagerStatistics, O
 from app.schemas.statistics_schema import CandidatesStatistics
 from app.utils.database.test_data import get_session
 
-statistics_router = APIRouter(
-    prefix="/statistics",
-    tags=["Работа со статистикой"]
-)
+statistics_router = APIRouter(prefix="/statistics", tags=["Работа со статистикой"])
 
 
 @statistics_router.get("/manager/{manager_id}", response_model=ManagerStatistics)

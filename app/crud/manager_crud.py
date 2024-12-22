@@ -77,7 +77,12 @@ async def read_available_candidates(
     logger.debug("Получение доступных кандидатов")
 
     request = select(Candidate).where(Candidate.is_hired == False)
-    subquery = aliased(ManagerCandidate, select(ManagerCandidate).where(ManagerCandidate.done_by == manager_id).subquery())
+    subquery = aliased(
+        ManagerCandidate,
+        select(ManagerCandidate)
+        .where(ManagerCandidate.done_by == manager_id)
+        .subquery(),
+    )
 
     request = (
         select(Candidate)
@@ -86,7 +91,9 @@ async def read_available_candidates(
         .options(joinedload(Candidate.courses).joinedload(CandidateCourse.course))
         .options(joinedload(Candidate.skills).joinedload(CandidateSkill.skill))
         .options(joinedload(Candidate.managers.of_type(subquery)))
-        .group_by(Candidate, ManagerCandidate.is_invited)  # Указываем конкретные столбцы
+        .group_by(
+            Candidate, ManagerCandidate.is_invited
+        )  # Указываем конкретные столбцы
     )
 
     # Фильтрация по возрасту
@@ -114,13 +121,13 @@ async def read_available_candidates(
 
     # Сортировка
     if sort_by == sortBy.is_invited:
-       logger.debug("Сортировка по приглашенности")
+        logger.debug("Сортировка по приглашенности")
 
-       request = request.order_by(ManagerCandidate.is_invited == True)
+        request = request.order_by(ManagerCandidate.is_invited == True)
     elif sort_by == sortBy.is_free:
-       logger.debug("Сортировка по свободности")
+        logger.debug("Сортировка по свободности")
 
-       request = request.order_by(ManagerCandidate.is_invited == False)
+        request = request.order_by(ManagerCandidate.is_invited == False)
 
     result = await session.execute(request)
     available_candidates = result.unique().scalars().all()

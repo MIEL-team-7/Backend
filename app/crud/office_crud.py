@@ -1,9 +1,8 @@
 from fastapi.params import Depends
-from sqlalchemy import func
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.models.models import Candidate, Manager, Office
+from app.models.models import Office
 from app.utils.database.test_data import get_session
 
 

@@ -6,6 +6,7 @@ from urllib3 import request
 
 from app.crud.statistics.candidate_crud import read_candidates_statistics
 from app.crud.statistics.office_crud import read_office_load, read_office_by_manager_id
+
 from app.models.models import Manager
 from app.utils.database.test_data import get_session
 
