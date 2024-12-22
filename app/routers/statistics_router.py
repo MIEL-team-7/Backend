@@ -44,10 +44,11 @@ async def get_offices_statistics(session: AsyncSession = Depends(get_session)):
     """Получить общую статистику по офисам"""
     all_offices_count = await read_all_offices_count(session)
     all_offices = await read_all_offices_load(session)
-    return {
+    statistics = {
         'total': all_offices_count,
         'office_load': all_offices,
     }
+    return OfficeStatistics(**statistics)
 
 @statistics_router.get("/office/{office_id}", response_model=OfficeLoadStatistics)
 async def get_office_stat_by_id(office_id: int, session: AsyncSession = Depends(get_session)):

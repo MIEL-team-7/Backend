@@ -67,5 +67,5 @@ async def read_managers_statistics(session: AsyncSession = Depends(get_session))
     return {
         "total_managers": managers_count,
         "candidates_statistics": candidates,
-        "statistics": manager_statistics,
+        "managers_statistics": manager_statistics,
     }
