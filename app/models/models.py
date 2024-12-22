@@ -11,9 +11,8 @@ from sqlalchemy import (
     ForeignKey,
 )
 from sqlalchemy.orm import relationship
-from fastapi_storages.integrations.sqlalchemy import FileType, ImageType
 from app.core.db import Base
-from app.utils.file_upload import storageF, storageI
+from app.utils.file_upload import storageI
 
 
 # Абстрактная модель
@@ -112,8 +111,8 @@ class ManagerCandidate(BaseModel):
     id = Column(Integer, primary_key=True)
     done_by = Column(Integer, ForeignKey("managers.id"), index=True)
     candidate_id = Column(Integer, ForeignKey("candidates.id"), index=True)
-    is_invited = Column(Boolean, default=True, index=True)
-    is_viewed = Column(Boolean, default=True, index=True)
+    is_invited = Column(Boolean, default=False, index=True)
+    is_viewed = Column(Boolean, default=False, index=True)
     is_favorite = Column(Boolean, default=False, index=True)
     note = Column(String(255))
 

@@ -1,10 +1,8 @@
-from idlelib.debugger_r import DictProxy
 
 from fastapi.params import Depends
 from sqlalchemy import func
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
-from urllib3 import request
 
 from app.crud.office_crud import get_office_by_id
 from app.crud.statistics.candidate_crud import read_candidate_count, read_available_candidates_count, \
@@ -21,7 +19,9 @@ async def read_all_offices_count(session: AsyncSession = Depends(get_session)):
     return all_offices
 
 
-async def read_office_load(office_id: int, session: AsyncSession = Depends(get_session)):
+async def read_office_load(
+    office_id: int, session: AsyncSession = Depends(get_session)
+):
     """Получение загруженности офиса по id офиса"""
     request = await session.execute(select(Office).where(Office.id == office_id))
     office = request.scalars().first()
