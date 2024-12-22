@@ -23,7 +23,7 @@ async def read_candidate_count_filter_date(date: date, session: AsyncSession = D
     return candidate_count_filter_date
 
 
-async def read_candidates(session: AsyncSession = Depends(get_session)):
+async def read_candidates_statistics(session: AsyncSession = Depends(get_session)):
     """Получение статистики по кандидатам"""
     total_candidates = await read_candidate_count(session)
     last_day_candidates = await read_candidate_count_filter_date(date.today() - timedelta(days=1), session)

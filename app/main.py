@@ -21,7 +21,7 @@ from app.utils.admin_panel import (
 )
 from app.utils.routers import register_routers
 
-app = FastAPI()
+app = FastAPI(debug=True)
 
 # CORS - порты, с которых можно обращаться
 origins = [

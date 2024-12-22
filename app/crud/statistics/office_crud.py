@@ -9,7 +9,6 @@ from urllib3 import request
 from app.crud.office_crud import get_office_by_id
 from app.crud.statistics.candidate_crud import read_candidate_count, read_available_candidates_count, \
     read_invited_candidates
-from app.crud.statistics.manager_crud import read_quotas_by_manager_id
 from app.models.models import Candidate, Manager, Office
 from app.utils.database.test_data import get_session
 

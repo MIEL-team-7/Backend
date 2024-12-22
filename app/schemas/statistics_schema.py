@@ -51,17 +51,18 @@ class OfficeLoadStatistics(BaseModel):
 class OfficeStatistics(BaseModel):
     """Модель для информации об офисе"""
     total: int
-    office_load: List[OfficeLoadStatistics]
+    office_load: OfficeLoadStatistics
 
 
 class ManagerStatistics(BaseModel):
     """Модель для информации о менеджере"""
     full_name: str
     quotas: int
-    office: OfficeStatistics
+    office: OfficeLoadStatistics
 
 
 class StatisticsResponse(BaseModel):
     """Модель для основного ответа"""
-    manager: ManagerStatistics
-    statistics: Dict[str, dict]
+    managers: int
+    candidates: CandidatesStatistics
+    statistics: List[ManagerStatistics]
