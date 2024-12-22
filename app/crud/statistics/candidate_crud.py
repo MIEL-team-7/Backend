@@ -14,19 +14,7 @@ from app.models.models import (
 from app.utils.database.test_data import get_session
 
 
-async def read_candidate_filter_date(
-    date: date, session: AsyncSession = Depends(get_session)
-):
-    """Получение списка кандидатов по интервалу дней"""
-    request = select(Candidate).filter(Candidate.created_at >= date)
-    result = await session.execute(request)
-    candidate_filter_date = result.scalars().all()
-    return candidate_filter_date
-
-
-async def read_candidate_count_filter_date(
-    date: date, session: AsyncSession = Depends(get_session)
-):
+async def read_candidate_count_filter_date(date: date, session: AsyncSession = Depends(get_session)):
     """Получение количества кандидатов по интервалу дней"""
     request = (
         select(func.count()).select_from(Candidate).filter(Candidate.created_at >= date)
@@ -36,7 +24,7 @@ async def read_candidate_count_filter_date(
     return candidate_count_filter_date
 
 
-async def read_candidates(session: AsyncSession = Depends(get_session)):
+async def read_candidates_statistics(session: AsyncSession = Depends(get_session)):
     """Получение статистики по кандидатам"""
     total_candidates = await read_candidate_count(session)
     last_day_candidates = await read_candidate_count_filter_date(
@@ -62,19 +50,7 @@ async def read_candidates(session: AsyncSession = Depends(get_session)):
     }
 
 
-async def read_available_candidates(
-    is_hired: bool, session: AsyncSession = Depends(get_session)
-):
-    """Получение списка доступных/приглашенных кандидатов"""
-    request = select(Candidate).filter(Candidate.is_hired == is_hired)
-    result = await session.execute(request)
-    available_candidates = result.scalars().all()
-    return available_candidates
-
-
-async def read_available_candidates_count(
-    is_hired: bool, session: AsyncSession = Depends(get_session)
-):
+async def read_available_candidates_count(is_hired: bool, session: AsyncSession = Depends(get_session)):
     """Получение количества доступных/приглашенных кандидатов"""
     request = (
         select(func.count())
