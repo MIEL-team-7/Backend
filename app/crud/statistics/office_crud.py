@@ -4,13 +4,14 @@ from sqlalchemy import func
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.crud.statistics.candidate_crud import read_candidate_count
-from app.crud.statistics.manager_crud import read_quotas_by_manager_id
-from app.models.models import Office
+from app.crud.office_crud import get_office_by_id
+from app.crud.statistics.candidate_crud import read_candidate_count, read_available_candidates_count, \
+    read_invited_candidates
+from app.models.models import Candidate, Manager, Office
 from app.utils.database.test_data import get_session
 
 
-async def read_offices_count(session: AsyncSession = Depends(get_session)):
+async def read_all_offices_count(session: AsyncSession = Depends(get_session)):
     """Получение количества всех офисов"""
     request = select(func.count()).select_from(Office)
     result = await session.execute(request)
@@ -28,20 +29,16 @@ async def read_office_load(
     if not office:
         return None
 
-    total_candidates = await read_candidate_count(
-        session
-    )  # FIXME: функция возвращает общее количество кандидатов. Этот пункт не нужен, так как офисы не имеют квоты. Их имеют руководители.
-    quotas = await read_quotas_by_manager_id(
-        office_id, session
-    )  # FIXME: функция запрашивает manager_id(id руководителя), а не office_id(id офиса)
-    available_slots = quotas - total_candidates
+    total_candidates = await read_candidate_count(session)
+    invited_candidates = await read_invited_candidates(session)
+    hired_candidates = await read_available_candidates_count(True, session)
 
     return {
         "name": office.name,
         "location": office.location,
-        "total": total_candidates,
-        "quotas": quotas,
-        "available_slots": available_slots,
+        "total_candidates": total_candidates,
+        "invited_candidates": invited_candidates,
+        "hired_candidates": hired_candidates,
     }
 
 
@@ -62,11 +59,17 @@ async def read_all_offices_load(session: AsyncSession = Depends(get_session)):
     return offices_stats
 
 
-async def read_office_by_id(
-    office_id: int, session: AsyncSession = Depends(get_session)
-):
+async def read_office_by_manager_id(manager_id: int, session: AsyncSession = Depends(get_session)):
     """Получение офиса по id"""
-    request = select(Office)
+    request = select(Office).join(Office, Manager.office_id == manager_id)
     result = await session.execute(request)
-    office = result.scalars().all()
+    office = result.scalars().first()
+
+    if office:
+        return {
+            'id': office.id,
+            'name': office.name,
+            'location': office.location,
+        }
+
     return office
